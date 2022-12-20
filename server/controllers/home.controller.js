@@ -224,7 +224,7 @@ class HomeController {
             const investments /**Array<Investment>*/ = await this.investmentService.retrieveInvestments();
             return res.status(200).json(investments);
         } catch( ex /**Exception */){ 
-            return res.status(400).json({error: err.message});
+            return res.status(400).json({error: ex.message});
             
         }
      }

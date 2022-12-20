@@ -2,7 +2,12 @@ require("dotenv").config()
 // DB Setup
 const {MongooseSetup, ConfigurationSettings} = require("./config.js")
 const DBURI = process.env.MONGOURI
-new MongooseSetup().configDB(DBURI)
+const mongoDb /**Mongo Setup*/ = new MongooseSetup()
+async function setUpDb(){
+    await mongoDb.configDB(DBURI)
+}
+
+setUpDb();
 
 const {app} = require("./index.js")
 
