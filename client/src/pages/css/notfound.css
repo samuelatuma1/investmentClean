@@ -1,0 +1,29 @@
+:root{
+    --a-color: #f5a623;
+}
+.notFound > h1{
+    font-size: 4rem;
+    font-weight: bold;
+    text-align: center;
+    color: grey;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+.notFound p{
+    text-align: center;
+}
+.notFound a{
+    display: block;
+    text-align: center;
+    font-weight: bold;
+    text-decoration: none;
+    color: var(--a-color);
+}
+.notFound{
+    display: grid;
+    height: 100vh;
+    align-content: center;
+
+}

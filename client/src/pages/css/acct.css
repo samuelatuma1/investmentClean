@@ -1,0 +1,272 @@
+@import "../../components/css/footer.css";
+:root{
+    --min-height: 200px;
+    --border: 1px solid rgb(215, 231, 231);
+    --bg-color: rgb(239, 237, 237);
+}
+.container{
+    background-color: var(--bg-color, rgb(239, 237, 237));
+}
+
+.containerDesc {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.transaction{
+    display: grid;
+    padding: 1rem 10px;
+    border-radius: 15px;
+    grid-template-columns: 10% 40% 30% 20%;
+}
+.toggleRef{
+    max-height: 80vh;
+    overflow-y: scroll;
+    
+}
+.userAcctHomePage{
+    display:flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+
+    height:auto !important;
+    min-height:100%;
+
+}
+
+.container .toggleBtn, button{
+    background-color: teal;
+   
+    color: aliceblue;
+    padding: 10px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: 1s;
+}
+.container  .toggleBtn:hover, button:hover{
+    border-radius: 5px;
+    box-shadow: 0px 0px 1px 0px rgb(199, 195, 195);
+}
+
+.container{
+    padding: 10px;
+    transition: 1s;
+    width: 95%;
+    margin: 20px 0px;
+    box-shadow: 0px 0px 10px 0px rgb(210, 204, 204);
+}
+.container:hover{
+    border-radius: 15px;
+    box-shadow: 0px 0px 10px 0px rgb(176, 171, 171);
+}
+.transaction:nth-child(2n){
+    background-color: aliceblue;
+}
+
+
+
+/*  RequestFundAccount Component */
+.successful {
+    padding: 10px;
+    display: flex;
+    align-items: center;;
+}
+.hide{
+    display: none !important;
+}
+
+input, select, textarea{
+    padding: 10px;
+    display: block;
+    border-radius: 5px;
+    border: 1px solid rgb(105, 129, 148);
+    background-color: aliceblue;
+    margin: 10px 0px;
+}
+textarea[name=html]{
+    min-width: 80%;
+    min-height: 150px;
+}
+.introForm textarea{
+    min-width: 80%;
+    min-height: 100px;
+}
+
+/* Investment Options */
+
+.investmentOptions {
+    display: flex;
+    /* justify-content: flex-end ; */
+    /* background-color: aliceblue; */
+    overflow-x: scroll;
+    padding: 20px 0px;
+}
+.investmentOptions h4{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: rgb(107, 105, 105);
+}
+.investmentOptions > div{
+   
+    min-width: 70%;
+    background-color: white;
+    padding: 10px;
+    border-radius: 10px;
+    margin: 20px 10px;
+    box-shadow: 0px 0px 3px 1px aliceblue;
+    /* flex-grow: 1; */
+}
+.investmentOptions .investmentOptionForm{
+    min-width: 90%;
+}
+.investmentOptions button{
+    color: black;
+    background: gold;
+    font-weight: bolder;
+}
+
+
+
+div.userTransaction{
+    margin: 20px 5px;
+    border-radius: 20px;
+    padding: 10px;
+    background-color: white;
+    border: var(--border, 1px solid rgb(215, 231, 231));
+}
+.userTransaction > section{
+    margin: 20px 0px;
+
+}
+.userTransaction > section > p{
+    display: flex;
+    align-items: center;
+}
+
+
+.statusBtns{
+    display: flex;
+    justify-content: space-evenly;
+    padding: 10px;
+}
+.statusBtns button{
+    padding: 12px;
+    border-radius: 25px;;
+    color: aliceblue;
+    background: black;
+}
+.emptyList h1, .emptyList p{
+    text-align: center;
+    min-width: 50%;
+    margin: auto;
+}
+.emptyList{
+    background-color: white;
+    min-height: var(--min-height, 200px);
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+    border-radius: 20px;
+    padding: 10px;
+}
+
+.withdrawalCurrencies button{
+    background-color: white;
+    color: black;
+    border: 1px solid rgb(203, 203, 203);
+    border-radius: 5px;
+    display: inline-flex;
+    align-items: center;
+    margin-right: 10px;
+}
+
+.displayBalances section{
+    margin-top: 10px;
+    background-color: white;
+    border-radius: 5px;
+    display: flex;
+    flex-wrap: wrap;
+    min-height: var(--min-height, 200px);
+    align-content: center;
+    justify-content: center;
+    border: var(--border, 1px solid rgb(215, 231, 231));
+
+}
+.displayBalances h2, .displayBalances h5{
+    
+    min-width: 100%;
+    text-align: center;
+    padding: 5px;
+}
+.displayBalances main{
+    margin-top: 10px;
+}
+.displayBalances main > p{
+    text-align: center;
+    background-color: white;
+    padding: 10px;
+    color: blue;
+    border: 1px solid blue;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+button.isActive{
+    background-color: rgb(218, 232, 245);
+    border: 1px solid rgb(66, 66, 150);
+}
+
+.withdrawalForm{
+    background-color: white;
+    padding: 20px;
+    margin-top: 20px;
+    border-radius: 5px;
+}
+input[type=checkbox]{
+    display: inline;
+}
+.withdrawalForm button[type=submit]{
+    background-color: blue;
+}
+
+.withdrawalForm .error{
+    color: red;
+    display: flex;
+    align-items: center;
+}
+.withdrawalForm .success{
+    color: teal;
+    display: flex;
+    align-items: center;
+}
+section.statusBtns .clickedInvestmentStatusBtn{
+    background-color: white;
+    color: black;
+    border: 1px solid black;
+    box-shadow: 0px 0px 2px 0px black;
+
+}
+@media screen and (min-width: 767px){
+    .container{
+        max-width: 48%;
+    }
+    .investmentOptions > div{
+        min-width: 48%;
+    }
+
+    .userAcctHomePage{
+        align-content: flex-start;
+        min-height: calc(100vh - var( --bg-screen-footer-min-height));
+    }
+}
+
+@media screen and (min-width: 1200px){
+    .container{
+        max-width: 31%;
+    }
+}

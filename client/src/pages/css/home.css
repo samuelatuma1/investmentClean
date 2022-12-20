@@ -1,0 +1,348 @@
+:root{
+    --intro-bg: rgb(255, 249, 241);
+    --big-screen: 767px;
+    --investment-bg: rgb(220, 213, 213);
+}
+
+body{
+    width: 100vw;
+    margin: auto;
+
+    overflow-x: hidden;
+    
+
+}
+.homePageIntroDiv{
+    background-size: contain;
+    min-height: 350px;
+    padding: 10px;
+    background-color: var(--intro-bg);
+    padding-bottom: 20px;
+    
+}
+.introTextDiv h1{
+    box-sizing: border-box;
+    margin: 0;
+    min-width: 0;
+    color: #1E2329;
+    font-weight: bolder;
+    font-size: 32px;
+    line-height: 40px;
+
+}
+
+.introTextDiv main{
+    margin-top: 30px;
+}
+
+.introTextDiv p{
+    /* font-size: larger; */
+}
+.authBtns{
+    display: grid;
+    grid-template-columns: 48% 48%;
+    margin-top: 30px;
+    justify-content: space-between;
+
+}
+.authBtns .authBtnSignUp, .reviewSubmitButton{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    min-height: 24px;
+    background-color: #FCD535;
+    width: 100%;
+    font-weight: bolder ;
+
+}
+.authBtns button, .reviewSubmitButton {
+    color: #181A20;
+}
+.authBtns a{
+    display: block;
+    text-decoration: none;
+}
+
+.introImgDiv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 0px;
+}
+.introImgDiv img{
+    display: block;
+    object-fit: cover;
+    width: 100%;
+    max-height: 650px; 
+
+}
+.statsDiv {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    padding: 50px 0px;
+}
+.statsDiv section{
+    padding: 10px 0px;
+}
+
+/* CoinsRate */
+.coinRatesDiv{
+    /* padding: 10px; */
+}
+
+.coinRatesDiv header{
+    color: grey;
+    display: grid;
+    grid-template-columns: 50% 27% 22%;
+    justify-content: center;
+    overflow-x: hidden;
+
+}
+.coinRatesDiv section{
+    display: grid;
+    grid-template-columns: 50% 27% 22%;
+    justify-content: center;
+    overflow-x: hidden;
+
+}
+.coinRatesDiv img {
+    margin: 0;
+    min-width: 0;
+    width: 24px;
+    height: 24px;
+    object-fit: cover;
+    color: black;
+    display: block;
+}
+.coinRateSection main{
+    display: flex;
+    align-items: center;
+}
+.coinRateSection span{
+    padding-left: 10px;
+    font-weight: bolder;
+}
+.teal{
+   
+    color: rgb(73, 72, 72);
+}
+.coinRatesDiv section main , .coinRatesDiv header{
+    padding: 20px 0px 20px 5px;
+
+}
+.coinRatesDiv section:hover {
+    background-color: aliceblue;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+/* Investments */
+.investmentsHomeDiv{
+    padding: 10px;
+    width: 100vw;
+}
+.investmentsHomeDiv{
+    /* background-color: var(--intro-bg); */
+}
+.investmentCardDiv{
+    margin: 8px;
+    padding: 5px;
+    border-radius: 10px;
+    background-color: white;
+    min-width: 99%;
+    box-shadow: 0px 0px 1px 0px #FCD535;
+}
+.investmentCardDiv:hover{
+    box-shadow: 0px 0px 1px 0px rgb(219, 207, 193);
+    border: 1px solid #FCD535;
+
+}
+.investmentCardDiv .headerSection{
+    padding: 10px 0px;
+    border-bottom: 1px solid aliceblue;
+}
+.investmentDetails{
+    display: grid;
+    grid-template-columns: 60% 40%;
+    padding: 10px 0px;
+
+}
+.investmentDetails h5{
+    display: flex;
+    align-items: center;
+    transition: 0.5s;
+}
+.investmentSectionBtn {
+    padding: 10px 0px;
+}
+.investmentsHomeDiv{
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.investmentSectionBtn button{
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    min-height: 24px;
+    color: #181A20;
+    background-color: #FCD535;
+    width: 100%;
+    font-weight: bolder;
+}
+.investmentSectionBtn a{
+    color: #181A20;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bolder ;
+}
+.waitPeriod h5{
+    display: flex;
+    /* justify-content: space-evenly; */
+    align-items: center;
+}
+.investmentCardDiv .waitPeriod {
+    margin: auto;
+}
+
+/* How to Earn */
+.howToEarnDiv{
+    background-color: var(--intro-bg);
+    
+}
+.howToEarnDiv h2{
+    font-weight: bold;
+}
+.howToEarnSection{
+    display: grid;
+}
+.howToEarnImage img{
+    display: block;
+    object-fit: cover;
+    max-height: 700px;
+    margin: auto;
+}
+.howToEarnMain{
+    display: grid;
+    align-content: center;
+}
+.howToEarnMain div{
+    padding: 10px;
+}
+.howToEarnMain p{
+    padding: 15px;
+    
+}
+.howToEarnMain h2{
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+}
+/* Hack for .investmentCardDiv  */
+@media screen and (min-width: 410px){
+    .investmentCardDiv{
+        min-width: 400px;
+    }
+}
+
+/** Review*/
+.homeReviewDiv{
+    background-color: var(--intro-bg);
+    padding: 20px;
+} 
+.reviewListDiv{
+    display: flex;
+    padding: 10px;
+    overflow-x: scroll;
+}
+.reviewCard{
+    max-width: 300px;
+    min-width: 250px;
+    background-color: white;
+    border-radius: 5px;
+    padding: 10px;
+    margin-right: 10px; 
+    box-shadow: 0px 0px 1px 0px gold;
+    transition: 0.5s linear;
+}
+.reviewCard:hover{
+    box-shadow: 0px 0px 1px 0px yellow;
+}
+
+.reviewCard .summaryDiv{
+    display: flex;
+    justify-content: center;
+    padding: 10px 0px;
+}
+.summaryDiv .reviewImgSection{
+    min-width: 81px;
+    min-height: 81px;
+
+}
+.summaryDiv .reviewImgSection img{
+    height: 80px;
+    width: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+.reviewImgSectionText{
+    display: flex;
+    flex-wrap: wrap;
+    align-content: center;
+
+}
+.reviewImgSectionText span{
+    display: block;
+    min-width:51%;
+}
+
+.authAnchor{
+     color: #f5a623;
+     font-weight: bolder;
+     text-decoration: none;
+}
+.authAnchor:hover{
+    text-decoration: underline;
+}
+@media screen and (min-width: 767px){
+
+    .homePageIntroDiv > section{
+        display: grid;
+        width: 80%;
+        margin: auto;
+        justify-content: space-between;
+        grid-template-columns: 50% 40%;
+        align-items: center;
+    }
+
+    section.statsDiv{
+        grid-template-columns: repeat(4, 25%);
+    }
+
+    /* Coin Exchange */
+    .coinRatesDiv{
+        padding: 10px;
+    }
+    .coinRatesDiv h2{
+        text-align: center;
+    }
+    .coinRates{
+        max-width: 70%;
+        margin: auto;
+    }
+    .investmentCardDiv {
+        max-width: 700px;
+        min-width: 400px;
+    }
+
+    /* How to earn*/
+    .howToEarnSection{
+        grid-template-columns: 50% 50%;
+    }
+}
+

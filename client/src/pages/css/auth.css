@@ -1,0 +1,96 @@
+@import "../../components/css/footer.css";
+:root{
+    /* --form-outline-btn-color: rgb(252, 213, 53); */
+    --form-outline-btn-color: gold;
+}
+.auth{
+    min-height: 70vh;
+    max-width: 99vw;
+    background-color: rgb(228, 228, 228);
+    display: flex;
+    align-items: center;
+    padding: 20px;
+}
+.form input[type=email], .form input[type=password], input[type=text]{
+    display: block;
+    width: 100%;
+    background-color: white;
+    outline: 0;
+    border: 1px solid grey;
+    transition: 0.3s linear;
+    padding: 15px 5px;
+}
+.form input:hover{
+    border: 1px solid var(--form-outline-btn-color);
+    
+}
+
+.form {
+    background-color: white;
+    
+    max-width: 600px;
+    
+    margin: auto;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0px 0px 5px 0px rgb(232, 227, 227);
+}
+.authImgDiv{
+    width: 100%;
+}
+.authImgDiv img{
+    display: block;
+    width: 99%;
+    margin: auto;
+}
+.form .inputErr{
+    color: red;
+    
+}
+
+.formErr, .formSuccess{
+    /* background-color: rgb(253, 159, 159); */
+    color : red;
+    padding : 20px;
+    list-style-type : none;
+    margin : 10px 0px 10px 0px;
+    border-radius: 5px;
+    max-width: 95%;
+    text-align: center;
+}
+
+
+.formSuccess{
+    color : var(--success, teal);
+}
+
+
+.authBtn{
+    color: rgb(24, 26, 32);
+    font-weight: bold;
+    border-radius: 4px;
+    min-height: 24px;
+    border: none;
+    background-image: none;
+    padding: 15px;
+    background-color: var(--form-outline-btn-color);
+    width: 100%;
+}
+.authBtn:disabled{
+    background-color: #f6f6f6;
+}
+
+@media screen and (min-width: 410px) {
+    .form{
+        min-width: 350px;
+    }
+    
+}
+
+@media screen and (min-width: 767px) {
+    .form{
+        min-width: 350px;
+        min-height: calc(90vh - var(--bg-screen-footer-min-height));
+    }
+    
+}

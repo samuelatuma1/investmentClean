@@ -1,0 +1,110 @@
+
+/* Mobile first design */
+.form {
+    width : 90%;
+    padding : 20px;
+    transition : 0.5s;
+    margin : auto;
+    margin: 20px auto;
+    
+}
+.auth{
+    border: 1px solid rgb(245, 240, 240);
+    border-radius : 10px;
+    transition : 0.5s;
+    margin: 10px;
+
+}
+.auth:hover{
+    box-shadow : 0px 0px 10px 2px rgb(194, 192, 192);
+}
+.form .desc h1{
+    font-weight: lighter;
+}
+.form input, .form textarea, .form button,  .form select{
+    border: 0px;
+    padding: 10px;
+    border-radius: 10px;
+    /* border: 1px solid rgb(208, 206, 206); */
+    margin: 1px;
+    transition: 0.5s linear;
+    display: block;
+}
+.form input, .form textarea{
+    flex-grow: 2;
+    box-shadow: 0px 0px 5px 0px rgb(210, 209, 209);
+    min-width: 80%;
+    outline: 0;
+    margin-bottom: 20px;
+}
+
+.form label{
+    /* border: 1px solid rgb(246, 245, 245); */
+    display: block;
+    padding: 5px;
+    border-radius: 15px;
+    margin: auto;
+    margin-top:5px;
+}
+.form button{
+    flex-grow: 1;    
+    background-color : var(--success, teal);
+    cursor: pointer;
+    color: aliceblue;
+    border-radius: 4px;
+}
+
+.form button:hover{
+    box-shadow: 0px 0px 5px 0px var(--success, teal);
+}
+.form .inputErr::before{
+    content: "*"
+}
+.form .inputErr{
+    color: red;
+}
+
+img{
+    display: block;
+    max-width: 99%;
+    object-fit: cover;
+}
+
+.formErr, .formSuccess{
+    /* background-color: rgb(253, 159, 159); */
+    color : red;
+    padding : 20px;
+    list-style-type : none;
+    margin : 10px 0px 10px 0px;
+    border-radius: 5px;
+    
+}
+
+
+.formSuccess{
+    color : var(--success, teal);
+}
+
+@media screen and (min-width: 600px){
+    .auth {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-around;
+    }
+    .auth .form{
+        max-width: 60%;
+    }
+
+    .auth .authImg{
+        max-width: 40%;
+        display: block;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .authImg img{
+        display: block;
+        width: 99%;
+        object-fit: cover;
+    }
+}

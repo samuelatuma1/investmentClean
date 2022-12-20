@@ -1,0 +1,133 @@
+:root{
+    --box-shadow: 0px 0px 10px 0px rgb(193, 187, 187);
+}
+.investment h4, .investment div{
+    display: flex;
+    align-items: center;
+    padding-right: 5px;
+    overflow-x: scroll;
+}
+
+.investment {
+    display: grid;
+    grid-template-columns: 20% 20% 20% 25% 15%;
+    align-items: center;
+}
+
+.investment:nth-of-type(2n){
+    background-color: aliceblue;
+}
+
+.investment button, .investmentActions button, .updateInvestment button{
+    background-color: teal;
+   
+    color: aliceblue;
+    padding: 10px;
+    border: 1px solid transparent;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: 1s;
+}
+.investment button:hover, .investmentActions button:hover{
+    border-radius: 5px;
+    box-shadow: 0px 0px 1px 0px rgb(199, 195, 195);
+}
+.investment input, .investment textarea{
+    border: 1px solid rgb(208, 206, 206);
+    border-radius: 15px;
+    padding: 5px;
+}
+
+.investments .activeInvestment.colorAsActive {
+    background-color: rgb(143, 143, 6) !important;
+    min-height: 300px;
+}
+.updateInvestment{
+    margin: 15px 0px;
+    box-shadow: var(--box-shadow);
+    border-radius: 5px;
+    padding : 10px;
+    transition: 0.8s;
+}
+.updateInvestment:hover{
+    box-shadow: 0px 0px 10px 0px rgb(164, 159, 159);
+    
+}
+
+.investmentActions{
+    
+    padding: 10px;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.investmentActions #delete{
+    background-color: red;
+}
+
+.adminTransactionUpdateDiv{
+    padding: 10px;
+    margin: 10px 0px;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+}
+
+.adminTransactionUpdateDiv .showBtn, .goldBtn {
+    color: black ;
+    background: gold;
+    font-weight: bolder;
+    max-height: 50px;
+}
+
+.transactionContent > div{
+    display: grid;
+    grid-template-columns: 50% 50%;
+    margin: 10px 0px;
+}
+.transactionContent > div h4{
+    display: flex;
+    align-items: center;
+}
+.transactionContent section{
+    margin-bottom: 10px;
+}
+
+.statuses {
+    padding: 10px;
+    display: flex;
+    justify-content: space-evenly;
+}
+.statuses button, .withdrawalView button{
+    padding: 12px;
+    border-radius: 24px;
+    background-color: navy;
+    margin: 10px;
+}
+
+/* Withrawal Update */
+.withdrawalView .clicked{
+    background-color: white;
+    color: navy;
+    border:1px solid navy;
+}
+.withdrawalUpdateDiv{
+    padding: 10px;
+    margin: 10px 0px;
+    border-radius: 10px;
+    box-shadow: var(--box-shadow);
+    background-color: white;
+}
+.withdrawalUpdateh3{
+    
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.withdrawalDetails h4{
+    display: flex;
+    align-items: center;
+}
+.withdrawalDetails main{
+    margin-bottom: 10px;
+}
