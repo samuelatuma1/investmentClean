@@ -112,7 +112,7 @@ const SignUpForm = (props) => {
 
     async function submitForm(e){
         e.preventDefault();
-        signUpBnRef.current.disabled = true; // disable sign up button, so it can't be clicked for the time being
+        
         const formDetails = searchForEmpties(signupForm)
         if(!formDetails){
             alert("Please fill out all fields");
@@ -126,10 +126,13 @@ const SignUpForm = (props) => {
             alert("Please input a strong password!")
             return
         }
+
         // Submit form Data
         // Set formSuccess and formError to empty
         setFormSuccess([]);
         setFormErrors([]);
+
+        signUpBnRef.current.disabled = true; // disable sign up button, so it can't be clicked for the time being
         const signUpReq = await fetch("/auth/signup", {
             method: "POST",
             headers: {
@@ -137,6 +140,9 @@ const SignUpForm = (props) => {
             },
             body: JSON.stringify(signupForm)
         })
+        signUpBnRef.current.disabled = false;
+        // clear passwords 
+        setSignupForm(prevData => ({...prevData, password: "", retypePassword: "" }));
         if(signUpReq.ok){
             console.log(signUpReq)
             if(signUpReq.status === 200){
