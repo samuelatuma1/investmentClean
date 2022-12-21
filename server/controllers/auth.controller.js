@@ -1,14 +1,14 @@
 "use strict"
 const {validationResult} = require("express-validator");
 const { IMailService } = require("../services/mail.service");
-
+const IAuthService = require("../services/auth.service");
 class IAuth {
     
 }
 class Auth{
     /**
      * 
-     * @param {AuthService} authService 
+     * @param {IAuthService} authService 
      * @param {IMailService} mailService
      */
     constructor(authService, mailService, accountService){
@@ -232,6 +232,34 @@ class Auth{
             return res.status(200).json({error: err.message});
         }
     }
+
+    /** 
+     * @method put /changepassword
+     * @desc Allows users change password
+     * @protected (userId in req.userId)
+     * @param {{oldPassword: String, newPassword: String}} req
+     * @param {Promise<Response<{passwordChanged: boolean}>>} res
+     * @returns {updated: boolean}
+    */
+    changePassword = async (req /*: Request */, res /*: Response */) /*:*/ => {
+
+        const {oldPassword /** String */, newPassword /** String */} = req.body;
+        if(!oldPassword?.trim() || !newPassword?.trim()){
+            return res.status(403).json({message: "Please include old and new password"});
+        }
+        const userId /**ObjectId */ = req.userId;
+        
+        const  {passwordChanged }= await this.authService.changePassword(userId, oldPassword, newPassword)
+
+        if(passwordChanged)
+            return res.status(200).json({passwordChanged});
+        
+        else
+            return res.status(401).json({passwordChanged})
+        
+    }
+
+    
 
 }
 

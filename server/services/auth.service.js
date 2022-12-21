@@ -64,6 +64,15 @@ class IAuthService {
      * @returns {Promise<User>?}
      */
      retrieveUserById = async (userId) => {}
+
+     /**
+     * 
+     * @param {ObjectId} _id 
+     * @param {string} oldPassword 
+     * @param {string} newPassword 
+     * @returns {Promise<{passWordChanged: boolean}>}
+     */
+    changePassword = async (_id /** ObjectId */, oldPassword /** String */, newPassword /** String */) /**{passWordChanged: boolean} */=> {}
 }
 
 
@@ -291,6 +300,32 @@ class AuthService{
         }
 
         return null;
+    }
+
+    /**
+     * 
+     * @param {ObjectId} _id 
+     * @param {string} oldPassword 
+     * @param {string} newPassword 
+     * @returns {Promise<{passWordChanged: boolean}>}
+     */
+    changePassword = async (_id /** ObjectId */, oldPassword /** String */, newPassword /** String */) /**{passWordChanged: boolean} */=> {
+        // check if old password matches saved Password
+        let passwordChanged /** boolean */ = false;
+        const user /** User */ = await User.findById(_id);
+        if(user !== null){
+            // hash oldPassword
+            const oldPasswordHash /** String */= this.#hashData(oldPassword);
+            const passwordMatches /** boolean */ = user.password === oldPasswordHash;
+            if(passwordMatches){
+                const hashPassword /** String */= this.#hashData(newPassword);
+                const updatedPassword = await User.findByIdAndUpdate(_id, {password: hashPassword});
+                passwordChanged = true;
+            }
+        }
+
+        // else
+        return {passwordChanged}; 
     }
 }
 

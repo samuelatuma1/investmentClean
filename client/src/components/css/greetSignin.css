@@ -1,0 +1,20 @@
+
+li.greet{
+    
+    padding: 8px;
+    display: inline-block;
+    /* color: #f5a623; */
+    color: grey;
+    /* border: 1px solid #f5a623; */
+    border: 1px solid rgb(199, 196, 196);
+    list-style-type: none;
+    border-radius: 18px;
+    text-align: center;
+}
+@media screen and (max-width: 767px){
+    li.greet{
+        margin-top: 5px;
+        border: 1px solid transparent;
+        padding-left: 0px; 
+    }
+}

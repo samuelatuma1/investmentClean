@@ -32,3 +32,11 @@ const oldDate /**DateTime */ = new Date("2022-10-12T19:54:00.627Z").getTime();
 const currTime = new Date().getTime();
 
 console.log((currTime - oldDate)/ (60 * 60 * 24 * 1000));
+
+/**
+ * 
+ * @returns 
+ */
+
+
+console.log({time: greet()});

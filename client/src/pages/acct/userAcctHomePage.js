@@ -4,7 +4,7 @@ import { UserState } from "../../globalStore/atoms";
 import { useSetRecoilState, useRecoilValue } from "recoil";
 import { useEffect, useRef, useState } from "react";
 import {useNavigate} from "react-router-dom";
-
+import { DisplayWelcome } from "../../components/AcctHomePageDisplayUser";
 // Custom Hooks
 import {useReRouteIfNotSignedIn} from "../../customHooks/auth.hooks.js";
 
@@ -29,6 +29,7 @@ import "../css/general.css";
 
 // Components
 import {Loading} from "../../components/loading.js";
+import { WelcomeSignIn } from "../../components/GreetSignIn";
 import { Footer } from "../../components/footer";
 /**
  * UserModel: {
@@ -923,6 +924,7 @@ const UserAccountComponent /*: ReactComponent */ = (props) => {
     return (
     <>
     <div className="userAcctHomePage">
+        <DisplayWelcome user={User} pageName="User Account" />
         <ViewTransactionHistory user={User}/>
         <RequestFundAccount user={User}/>
         <RequestWithdrawal user={User}/>

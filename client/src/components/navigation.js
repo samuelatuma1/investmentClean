@@ -9,6 +9,7 @@ import './css/navigation.css';
 // Icons
 import {FaHamburger} from "react-icons/fa";
 import {AiFillHome} from "react-icons/ai";
+import { WelcomeSignIn } from "./GreetSignIn";
 
 /**
  * @desc gives HTMLElement in navBar with className matching whatever value passed as active in props a class of active
@@ -109,16 +110,17 @@ export default function NavigationBar(props){
                         Account 
                     </Link>
                 </li>
-            </section>
 
-            <section className='authentication'>
                 <li className='signin'>
                     <Link to="/auth/signin" className="navAnchor signin"> 
                         Sign In
                      </Link> 
                 </li>
-                {/* <li className='signup'>Sign Up</li> */}
             </section>
+
+            
+            {/* Import Sign in Here */}
+            <WelcomeSignIn />
 
             </ul>                    
         </nav>

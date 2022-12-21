@@ -748,7 +748,7 @@ const UpdateWithdrawal = ({withdrawal /**Withdrawal */, token /**String */ }) =>
     // States
     const withdrawalDetailsRef /**Ref */ = useRef(null);
     const [mail /**{[Key: string]: string} */, setMail /**Funct<T, T> */] = useState({
-        to: withdrawal.userId.email,
+        to: withdrawal?.userId?.email || "",
         subject: "Update on withdrawal",
         html: "..."
     });
@@ -816,7 +816,7 @@ const UpdateWithdrawal = ({withdrawal /**Withdrawal */, token /**String */ }) =>
         loading ? <Loading />:
         <div className="withdrawalUpdateDiv">
             <h3 className="withdrawalUpdateh3">
-                {withdrawal.amount}{withdrawal.currency} by {withdrawal.userId.fullName}
+                {withdrawal?.amount}{withdrawal?.currency} by {withdrawal?.userId?.fullName}
                 <button className="goldBtn" 
                 onClick={toggleWithdrawalDetails}>
                     Details
@@ -833,7 +833,7 @@ const UpdateWithdrawal = ({withdrawal /**Withdrawal */, token /**String */ }) =>
                              <FaRegMoneyBillAlt />
                         </h4>
                         <p>
-                            {withdrawal.amount}{withdrawal.currency}
+                            {withdrawal?.amount}{withdrawal?.currency}
                         </p>
                     </main>
 
@@ -843,7 +843,7 @@ const UpdateWithdrawal = ({withdrawal /**Withdrawal */, token /**String */ }) =>
                              <AiOutlineUser />
                         </h4>
                         <p>
-                            {withdrawal.userId.fullName}
+                            {withdrawal?.userId?.fullName}
                         </p>
                     </main>
 
@@ -854,7 +854,7 @@ const UpdateWithdrawal = ({withdrawal /**Withdrawal */, token /**String */ }) =>
                              <MdEmail />
                         </h4>
                         <p>
-                            {withdrawal.userId.email}
+                            {withdrawal?.userId?.email}
                         </p>
                     </main>
 
@@ -863,7 +863,7 @@ const UpdateWithdrawal = ({withdrawal /**Withdrawal */, token /**String */ }) =>
                             Status
                         </h4>
                         <p>
-                            {withdrawal.status}
+                            {withdrawal?.status}
                         </p>
                     </main>
 
@@ -874,7 +874,7 @@ const UpdateWithdrawal = ({withdrawal /**Withdrawal */, token /**String */ }) =>
                             <BsCalendar2Date />
                         </h4>
                         <p>
-                            {withdrawal.createdAt}
+                            {withdrawal?.createdAt}
                         </p>
                     </main>
                 </div>
@@ -909,19 +909,19 @@ const UpdateWithdrawal = ({withdrawal /**Withdrawal */, token /**String */ }) =>
                             Update Status:
                             <select 
                             name="status"
-                            value={withdrawal.status}
+                            value={withdrawal?.status}
                             onChange={updateWithdrawalForm}>
                                 <option value={"approved"} 
-                                default={withdrawal.status === "approved"}>
+                                default={withdrawal?.status === "approved"}>
                                     Approved
                                 </option>
                                 <option value={"pending"} 
-                                default={withdrawal.status === "pending"}>
+                                default={withdrawal?.status === "pending"}>
                                     Pending
                                 </option>
 
                                 <option value={"rejected"} 
-                                default={withdrawal.status === "rejected"}>
+                                default={withdrawal?.status === "rejected"}>
                                     Rejected
                                 </option>
                             </select>
@@ -931,14 +931,14 @@ const UpdateWithdrawal = ({withdrawal /**Withdrawal */, token /**String */ }) =>
                             Set viewed by admin:
                             <select 
                             name="viewed"
-                            value={withdrawal.viewed}
+                            value={withdrawal?.viewed}
                             onChange={updateWithdrawalForm}>
                                 <option value={"seen"} 
-                                default={withdrawal.viewed === "seen"}>
+                                default={withdrawal?.viewed === "seen"}>
                                     Mark as Seen
                                 </option>
                                 <option value={"not seen"} 
-                                default={withdrawal.viewed === "not seen"}>
+                                default={withdrawal?.viewed === "not seen"}>
                                     Mark as Not Seen
                                 </option>
 

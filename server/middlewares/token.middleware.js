@@ -36,7 +36,6 @@ class ValidateToken{
     // ... via cookie in subsequent requests
     res.cookie("token", token)
 
-    console.log("Token => ", token)
     
     try{
         const decryptedData = JWTService.verifyToken(token, jwtKey);

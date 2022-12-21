@@ -1,0 +1,45 @@
+:root{
+    --a-color: #f5a623;
+}
+
+.displayWelcome{
+    width: 100%;
+    padding: 10px
+}
+.displayWelcome h2{
+    padding-bottom: 10px;
+}
+.displayWelcome p{
+    padding-bottom: 10px;
+}
+.displayWelcome p{
+    font-size: 18px;
+}
+.displayWelcome  button{
+    background-color: var(--a-color);
+    border-radius: 5px;
+    padding: 15px;
+
+}
+
+.displayWelcome button a{
+    text-decoration: none;
+    font-size: 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    color: rgb(24, 26, 32);
+    font-weight: bold;
+}
+
+.displayWelcome form{
+    max-width:500px;
+    border: 1px solid #ffedd0;
+    border-radius: 10px;
+    padding: 12px;
+}
+.displayWelcome form button{
+    max-width: 250px;
+    background-color: gold;
+}
+

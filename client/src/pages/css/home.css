@@ -225,6 +225,7 @@ body{
     display: block;
     object-fit: cover;
     max-height: 700px;
+    max-width: 99%;
     margin: auto;
 }
 .howToEarnMain{
