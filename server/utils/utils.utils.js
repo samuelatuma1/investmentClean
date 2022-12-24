@@ -116,6 +116,32 @@ class Utils {
             }
             return Math.round(timeDelta);
         }
+
+    /**
+     * @desc merges two objects to form one object, objects must have key value pairs with values being dictionaries 
+     * @param {{[Key: String]: {[Key: String]: any}} first_object 
+     * @param {[Key: String]: {[Key: String]: any} second_object 
+     * @returns {[Key: String]: {[Key: String]: any}} merged version of first_object and second_object
+     */
+    static mergeObjects = (first_object /**{[Key: String]: {[Key: String]: any} */, 
+            second_object /**{[Key: String]: {[Key: String]: any} */) /**{[Key: String]: {[Key: String]: any}} */ => {
+        const return_object /** {[Key: String]: any */ = {};
+        for(let second_object_key /**string */ in second_object){
+            if(!first_object.hasOwnProperty(second_object_key))
+                first_object[second_object_key] = {};
+            
+            const second_object_value /** {[Key: String]: any} */ = second_object[second_object_key];
+            const first_object_value /** {[Key: String]: any} */ = first_object[second_object_key];
+            return_object[second_object_key] = {...first_object_value, ...second_object_value};
+        }
+
+        for(let first_object_key /**string */ in first_object){
+            if(!return_object.hasOwnProperty(first_object_key)){
+                return_object[first_object_key] = first_object[first_object_key];
+            }
+        }
+        return return_object;
+    }
 }
 
 module.exports = {Utils}

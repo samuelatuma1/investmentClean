@@ -39,4 +39,61 @@ console.log((currTime - oldDate)/ (60 * 60 * 24 * 1000));
  */
 
 
-console.log({time: greet()});
+
+const filter = (transactions /**Array<TransactionModel> */, filterObject /**{[Key: String]: String} */) => {
+    let filterTransactions /**Array<TransactionModel> */ = transactions.slice();
+
+    for(let key in filterObject){
+        let filterValue /** string */= filterObject[key];
+        filterTransactions = filterTransactions.filter(transaction => transaction[key]?.toLowerCase() === filterValue.toLowerCase());
+    }
+
+    return filterTransactions;
+}
+
+let names /** Array<{[Key: String]: string}> */ =  [{name: "sam", age: 6, gender: "male"}, {name: "Samu", age: 6, gender:"female"},
+        {name: "Willy", age: 6, gender: "female"},
+        {name: "Sam", age: 6, gender: "female"},
+    ] 
+
+console.log(filter(names, {name: "SAM", gender: "female"}))
+/**
+ * @desc merges two objects to form one object, objects must have key value pairs with values being dictionaries 
+ * @param {{[Key: String]: {[Key: String]: any}} first_object 
+ * @param {[Key: String]: {[Key: String]: any} second_object 
+ * @returns {[Key: String]: {[Key: String]: any}} merged version of first_object and second_object
+ */
+function mergeObjects(first_object /**{[Key: String]: {[Key: String]: any} */, second_object /**{[Key: String]: {[Key: String]: any} */) /**{[Key: String]: {[Key: String]: any}} */{
+    const return_object /** {[Key: String]: any */ = {};
+    for(let second_object_key /**string */ in second_object){
+        if(!first_object.hasOwnProperty(second_object_key))
+            first_object[second_object_key] = {};
+        
+        const second_object_value /** {[Key: String]: any} */ = second_object[second_object_key];
+        const first_object_value /** {[Key: String]: any} */ = first_object[second_object_key];
+        return_object[second_object_key] = {...first_object_value, ...second_object_value};
+    }
+    return return_object;
+}
+
+const obj1 = {
+    "naira": {
+        "available": 10,
+        "withdrawn": 20
+    },
+    "dollars": {
+        "available": 15,
+        "withdrawn": 23
+    }
+}
+
+const obj2 = {
+    "naira": {
+        "user": "Nigeria"
+    },
+    "dollars": {
+        user: "United States"
+    }
+}
+
+console.log("merged => ", mergeObjects(obj1, obj2))

@@ -8,7 +8,7 @@ const {Withdrawal} = require("../models/withdrawal.model.js");
         amount: number,
         currency: string
     }
- */
+*/
 
 
 class IWithdrawalService {
@@ -284,8 +284,6 @@ class WithdrawalService {
         // console.log("UPDATED WITHDRAWAL => ", updateWithdrawalResponse);
         return updateWithdrawalResponse;
     }
-
-    
 
 }
 

@@ -1,5 +1,13 @@
 const {Transaction} = require("../models/transaction.model");
 const {AccountService} = require("./account.service.js");
+
+const TransactionsSummaryDTO = {
+    totalDeposits: Number, 
+    totalEarnings: Number, 
+    totalProfitFromInvestments: Number,
+    transactionCurrency: String, 
+    avgROI: Number
+}
 class ITransactionService {
     /**
      * @desc Creates a new transaction
@@ -47,6 +55,13 @@ class ITransactionService {
       * }>}
       */
      retrieveWithdrawableTransactions = async (acctId /**ObjectId */) => {}
+
+     /**
+     * @desc Summarizes transactions by account
+     * @param {ObjectId} acctId 
+     * @returns {Promise<{[Key: String]: TransactionsSummaryDTO}>} transaction summary for each currency for account
+     */
+    userTransactionsSummary = async (acctId /**ObjectId */) /** Object*/ => {}
 }
 
 /*
@@ -124,7 +139,7 @@ class TransactionService /*: implements ITransactionService */ {
     /**
      * 
      * @param {ObjectId} acctId : -> account Id
-     * @returns {List<TransactionModel>} for accountId
+     * @returns {Promise<List<TransactionModel>>} for accountId
      */
     getUserTransactions = async (acctId /*:ObjectId */) /** List<TransactionModel> */=> {
         try{
@@ -142,8 +157,9 @@ class TransactionService /*: implements ITransactionService */ {
                                                 - new Date(transactionObject.createdAt).getTime();
                 const daysPassedSinceTransaction /**number */= Math.floor(timeDelta / day);
                 transactionObject.days = daysPassedSinceTransaction;
+
                 const percent /**number */ = 0.01 * transactionObject.investmentId.yieldValue;
-                const waitPeriod = transactionObject.investmentId.waitPeriod;
+                const waitPeriod /**number */ = transactionObject.investmentId.waitPeriod;
                 const daysFraction /**number */ = this.#transactionCurrentValue(
                     daysPassedSinceTransaction, waitPeriod);
                 const yieldOverTime /**number */ = daysFraction * (percent);
@@ -151,7 +167,7 @@ class TransactionService /*: implements ITransactionService */ {
                 transactionObject.currentValue =  +currentValue.toFixed(2);
 
                 // Expected Value
-                const expectedValue = transactionObject.amount * (1 + percent);
+                const expectedValue /**number */= transactionObject.amount * (1 + percent);
                 transactionObject.expectedValue = expectedValue;
 
                 // available for withdrawal
@@ -259,6 +275,83 @@ class TransactionService /*: implements ITransactionService */ {
             withdrawableTransactionsAmount
         };
         
+    }
+
+    /**
+     * 
+     * @param {Array<Transaction>} transactions 
+     * @param {{[Key: String]: String}} filterObject 
+     * @returns {Array<Transaction>} filtered transactions list based on transaction Object
+     */
+    #filterTransactions = (transactions /**Array<TransactionModel> */, filterObject /**{[Key: String]: String} */) => {
+        let filterTransactions /**Array<TransactionModel> */ = transactions.slice();
+
+        for(let key in filterObject){
+            let filterValue /** string */= filterObject[key];
+            filterTransactions = filterTransactions.filter(transaction => transaction[key]?.toLowerCase() === filterValue.toLowerCase());
+        }
+
+        return filterTransactions;
+    }
+
+    orderTransactionsByCurrency = (transactions /** Array<Transaction> */) /**{[Key: String]: Array<Transaction} */ => {
+        const transactionsByCurrency /**{[Key: String]: Array<Transaction} */ = {};
+
+        for(let transaction /** Transaction */ of transactions){
+            const transactionCurrency /** string */ = transaction.currency;
+
+            if(!transactionsByCurrency.hasOwnProperty(transactionCurrency))
+                transactionsByCurrency[transactionCurrency] = [];
+            
+            transactionsByCurrency[transactionCurrency].push(transaction)
+        }
+
+        return transactionsByCurrency;
+    }
+    
+    /**
+     * @desc Summarizes transactions by account
+     * @param {ObjectId} acctId 
+     * @returns {Promise<{[Key: String]: TransactionsSummaryDTO}>} transaction summary for each currency for account
+     */
+    userTransactionsSummary = async (acctId /**ObjectId */) /** Object*/ => {
+        const transactionsSummary /** {[Key: String]: String } */ = {};
+        // get all user Transactions that are successful
+        const transactions /*: List<TransactionModel> */ = await this.getUserTransactions(acctId);
+        const PERCENT = 100;
+        let approvedTransactions /*: List<TransactionModel> */ = this.#filterTransactions(transactions, {status: "approved"});
+        const orderedTransactions /** {[Key: String]: Array<Transaction>} */= this.orderTransactionsByCurrency(approvedTransactions);
+
+
+        // for each currency, get a summary
+        for(let transactionCurrency /** String */ in orderedTransactions){
+            let currencyTransactions /** Array<Transaction> */ = orderedTransactions[transactionCurrency];
+
+            // for each currency, get a summary
+            // calculate total earnings from approvedTransactions
+            let totalEarnings /** number */ = 0;
+            let totalDeposits /** number */ = 0;
+            let transactionsForCurrencyCount /** number */ = 0;
+            for(let transaction /** TransactionModel */ of currencyTransactions){
+                
+                totalEarnings += transaction.currentValue;
+                totalDeposits += transaction.amount;
+                transactionsForCurrencyCount += 1;
+            }
+
+            // Calculate average return on investment
+            const totalProfitFromInvestments /** number */ = totalEarnings - totalDeposits;
+            const avgROI /** number */ = (totalProfitFromInvestments / totalDeposits) * PERCENT;
+            let currencySummary /**{[Key: String]: number| string } */ = {
+                totalDeposits, 
+                totalEarnings, 
+                totalProfitFromInvestments,
+                transactionCurrency, 
+                avgROI
+            };
+            transactionsSummary[transactionCurrency] = currencySummary;
+        }
+        return transactionsSummary;
     }
 }
 

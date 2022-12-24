@@ -9,11 +9,12 @@ const {WithdrawalService} = require("../services/withdrawal.service.js");
 
 
 const {WithdrawalController} = require("../controllers/withdrawal.controller.js");
+const { ConfigurationSettings } = require("../config.js");
+const processEnv = ConfigurationSettings.getEnv();
 
-
-const mailServiceProvider = process.env.service;
-const email_username = process.env.email_username;
-const email_password = process.env.email_password; 
+const mailServiceProvider = processEnv.service;
+const email_username = processEnv.email_username;
+const email_password = processEnv.email_password; 
 
 const withdrawalController /**WithdrawalController*/ = new WithdrawalController(
     new WithdrawalService(), 
@@ -30,11 +31,15 @@ withdrawalRoute.route('/withdraw')
 withdrawalRoute.route("/getwithdrawablebalance")
     .get(ValidateToken.validateToken, withdrawalController.getWithdrawableAndPendingBalance);
 
+withdrawalRoute.route('/getacctsummary')
+    .get(ValidateToken.validateToken, withdrawalController.getAccountSummary)
+    
 withdrawalRoute.route('/getwithdrawals')
     .get(ValidateToken.validateToken, withdrawalController.getAllWithdrawals);
 
 withdrawalRoute.route('/updatewithdrawal/:withdrawalId')
     .put(ValidateToken.validateToken, withdrawalController.updateWithdrawal);
+
 
 module.exports = {withdrawalRoute};
 

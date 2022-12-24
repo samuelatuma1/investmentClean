@@ -11,11 +11,12 @@ const {AuthService} = require("../services/auth.service.js")
 const {Mail} = require("../services/mail.service.js");
 const {AccountService} = require("../services/account.service.js");
 const { app } = require("../index.js")
+const { ConfigurationSettings } = require("../config.js");
+const processEnv = ConfigurationSettings.getEnv();
 
-
-const mailServiceProvider = process.env.service
-const email_username = process.env.email_username
-const email_password = process.env.email_password
+const mailServiceProvider = processEnv.service;
+const email_username = processEnv.email_username;
+const email_password = processEnv.email_password; 
 // console.log({email_password})
 const auth = new Auth(
         new AuthService(), 

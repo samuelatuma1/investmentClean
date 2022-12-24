@@ -8,11 +8,12 @@ const {TransactionService} = require("../services/transaction.service.js");
 const {InvestmentService} = require("../services/investment.service.js");
 const {AuthService} = require("../services/auth.service.js");
 const {Mail} = require("../services/mail.service.js");
+const { ConfigurationSettings } = require("../config.js");
+const processEnv = ConfigurationSettings.getEnv();
 
-
-const mailServiceProvider = process.env.service;
-const email_username = process.env.email_username;
-const email_password = process.env.email_password;
+const mailServiceProvider = processEnv.service;
+const email_username = processEnv.email_username;
+const email_password = processEnv.email_password; 
 
 const transaction = new TransactionController(new AccountService(), 
                         new TransactionService(), new InvestmentService(),

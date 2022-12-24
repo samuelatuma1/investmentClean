@@ -10,18 +10,21 @@ import {useReRouteIfNotSignedIn} from "../../customHooks/auth.hooks.js";
 
 // MdOutlinePendingActions => Approved 
 import { MdNoteAdd} from 'react-icons/md';
+import {BsBank, BsThreeDotsVertical, BsFillFileEarmarkCheckFill} from "react-icons/bs";
 
 
 
 import {AiFillMinusSquare, AiFillPlusSquare,  AiOutlineLoading3Quarters, AiOutlineInfoCircle} from "react-icons/ai";
 
 import {FiArrowUp} from "react-icons/fi";
-import {FaMoneyBillAlt, FaUserAlt} from "react-icons/fa";
+import {FaMoneyBillAlt, FaUserAlt, FaPercent} from "react-icons/fa";
 import {GrStatusGood, GrDocumentNotes} from "react-icons/gr";
 import {BsBarChartFill, BsCashCoin, BsCoin, BsCalendar2Date} from "react-icons/bs";
 import {FcLineChart, FcComboChart} from "react-icons/fc";
 import {BiHide} from "react-icons/bi";
 import {AiOutlineUser, AiFillMoneyCollect} from "react-icons/ai";
+
+// 
 //Styling
 import "../css/acct.css";
 import "../css/general.css";
@@ -31,14 +34,20 @@ import "../css/general.css";
 import {Loading} from "../../components/loading.js";
 import { WelcomeSignIn } from "../../components/GreetSignIn";
 import { Footer } from "../../components/footer";
-/**
- * UserModel: {
-    fullName: string;
-    email: string;
-    token: string;
-    _id: string;
+
+// Chart
+import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
+import { Doughnut } from "react-chartjs-2";
+
+ChartJS.register(ArcElement, Tooltip, Legend);
+
+let UserModel = {
+    fullName: String,
+    email: String,
+    token: String,
+    _id: String,
 }
- */
+
 
 /**
  * TransactionModel {
@@ -309,6 +318,7 @@ const AvailableInvestments = props => {
 
     </div>)
 }
+
 
 
 const RequestFundAccount = (props) => {
@@ -912,6 +922,293 @@ const RequestWithdrawal = (props) => {
     </div>)
 }
 
+
+
+/**
+ * 
+ * @param {{[key: String]: {[Key: string]: any}} objectToFlatten 
+ * @returns {Array<{[Key: string]: any}}
+ */
+const flatten = (objectToFlatten /**{[key: String]: {[Key: string]: any}} */) /** Array<> */ => {
+    const flattenedArray /**Array<{[Key: string]: any}> */ = []
+    for(let key in objectToFlatten){
+        const value /**  {[Key: string]: any} */ = flattenedArray.push(objectToFlatten[key]);
+    }
+    return flattenedArray;
+}
+
+const SummaryDTO = {
+    
+    "totalDeposits": Number,
+    "totalEarnings": Number,
+    "totalProfitFromInvestments": Number,
+    "transactionCurrency": String,
+    "avgROI": Number,
+    "availableWithdrawableBalance": Number,
+    "pendingWithdrawableBalance": Number
+      
+}
+/**
+ * 
+ * @param {{user: UserModel}} param0 
+ * @returns {JSX.Element} JSX
+ */
+ const Dashboard = ({user} /**: UserModel */) /**JSX.Element */ => {
+    const token /** string */ = "bearer " + user?.token;
+
+    
+    // States
+    const [summaries, setSummaries] = useState/**<SummaryDTO> */([]);
+    const defaulSummary /**SummaryDTO */ = {
+        "totalDeposits": 0.01,
+        "totalEarnings": 0.01,
+        "totalProfitFromInvestments": 0.00,
+        "transactionCurrency": "dollars",
+        "avgROI": 0,
+        "availableWithdrawableBalance": 0,
+        "pendingWithdrawableBalance": 0
+      }
+    const [loading, setLoading] = useState/**<boolean> */(false);
+
+    // Effects 
+    useEffect(() => {
+        getacctsummary()
+    }, [])
+    const getacctsummary = async () /**void */ => {
+        setLoading(true);
+        const getacctsummaryUrl /** String */ = "/withdrawal/getacctsummary";
+        const acctSummaryRequest /** Response */ = await fetch(getacctsummaryUrl, {
+            headers: {
+                authorization: token
+            }
+        });
+        setLoading(false)
+        if(acctSummaryRequest.ok){
+            const {summary}/**{summary : {[Key: String]: SummaryDTO}} */= await acctSummaryRequest.json();
+            let userSummary /**Array<SummaryDTO */ = flatten(summary).length ? flatten(summary): [defaulSummary]
+            setSummaries(userSummary);
+
+        }
+
+    }
+
+    // convert to dollars 
+    /**
+     * 
+     * @param {Number} amount 
+     * @param {String} currency 
+     * @returns {String}
+     */
+    const convertIfDollars = (amount /** Number */, currency /** String */) /** String */ => {
+        if(currency.toLowerCase().includes("dollar") || currency.toLowerCase().includes("usd")){
+            return amount.toLocaleString("en-US", {style:"currency", currency:"USD"});
+        }
+        return amount.toLocaleString() + currency
+    }
+
+    // Ref
+    const toggleRef = useRef/**<HTMLMainElement>*/(null);
+    // Events
+    function toggleRefDisplay(e /** EventObject */) /** void */{
+        toggleRef.current.classList.toggle("hide");
+    }
+    
+    return (
+        <div className="container">
+            <h3 className="containerDesc">
+                Dashboard
+                <button onClick={toggleRefDisplay}>Display</button>
+            </h3>
+            <main className="toggleRef hide" ref={toggleRef}>
+               {
+                loading ? <Loading /> :
+                <div className="dashboard">
+                    <h4 style={{textAlign: "center"}}>{user?.fullName}'s dashboard</h4>
+                    {summaries.map(
+                        (summary, idx) => (
+                            <div key={idx} className="currencySummary">
+                                <h3>Your {summary?.transactionCurrency} summary</h3>
+                                <h4>Deposits and earnings</h4>
+                                <section className="depositsAndEarningsSection">
+                                    
+                                    <main className="depositsAndEarningsMain">
+                                        <section>
+                                            <header>
+                                                <BsBank />
+                                                <BsThreeDotsVertical />
+                                            </header>
+                                            <main>
+                                                <h3>
+                                                    {
+                                                        convertIfDollars(
+                                                            summary?.totalDeposits || 0,
+                                                            summary?.transactionCurrency || "USD"
+                                                        )
+                                                    }
+                                                    <GrStatusGood />
+                                                </h3>
+                                                <p>
+                                                    Total approved deposits
+                                                </p>
+                                            </main>
+
+                                        </section>
+                                    </main>
+
+                                    <main className="depositsAndEarningsMain">
+                                        <section>
+                                            <header>
+                                                <BsBarChartFill />
+                                                <BsThreeDotsVertical />
+                                            </header>
+                                            <main>
+                                                <h3>
+                                                    {
+                                                        convertIfDollars(
+                                                            summary?.totalEarnings || 0,
+                                                            summary?.transactionCurrency || "USD"
+                                                        )
+                                                    }
+                                                    <GrStatusGood />
+                                                </h3>
+                                                <p>
+                                                    Total earnings
+                                                </p>
+                                            </main>
+
+                                        </section>
+                                    </main>
+                                    
+                                    <main className="depositsAndEarningsMain">
+                                        <section>
+                                            <header>
+                                                <BsBarChartFill />
+                                                <BsThreeDotsVertical />
+                                            </header>
+                                            <main>
+                                                <h3>
+                                                    {
+                                                        convertIfDollars(
+                                                            summary?.totalProfitFromInvestments || 0,
+                                                            summary?.transactionCurrency || "USD"
+                                                        )
+                                                    }
+                                                    <GrStatusGood />
+                                                </h3>
+                                                <p>
+                                                    Total profit
+                                                </p>
+                                            </main>
+
+                                        </section>
+                                    </main>
+
+                                    <main className="depositsAndEarningsMain">
+                                        <section>
+                                            <header>
+                                                <BsBarChartFill />
+                                                <BsThreeDotsVertical />
+                                            </header>
+                                            <main>
+                                                <h2>
+                                                    {
+                                                        Math.round(
+                                                            summary?.avgROI || 0
+                                                        )
+                                                    }%
+                                                    
+                                                </h2>
+                                                <p>
+                                                    Return on Investment
+                                                </p>
+                                            </main>
+
+                                        </section>
+                                    </main>
+                                </section>
+
+                                <h4>Withdrawals</h4>
+                                <section className="depositsAndEarningsSection">
+                                    <main className="depositsAndEarningsMain">
+                                        <section>
+                                            <header>
+                                                <BsBank />
+                                                <BsThreeDotsVertical />
+                                            </header>
+                                            <main>
+                                                <h3>
+                                                    {
+                                                        convertIfDollars(
+                                                            summary?.availableWithdrawableBalance || 0,
+                                                            summary?.transactionCurrency || "USD"
+                                                        )
+                                                    }
+                                                    <GrStatusGood />
+                                                </h3>
+                                                <p>
+                                                    Withdrawable balance
+                                                </p>
+                                            </main>
+
+                                        </section>
+                                    </main>
+
+
+                                    <main className="depositsAndEarningsMain">
+                                        <section>
+                                            <header>
+                                                <BsBank />
+                                                <BsThreeDotsVertical />
+                                            </header>
+                                            <main>
+                                                <h3>
+                                                    {
+                                                        convertIfDollars(
+                                                            summary?.pendingWithdrawableBalance || 0,
+                                                            summary?.transactionCurrency || "USD"
+                                                        )
+                                                    }
+                                                    <GrStatusGood />
+                                                </h3>
+                                                <p>
+                                                    Pending withdrawal
+                                                </p>
+                                            </main>
+
+                                        </section>
+                                    </main>
+                                </section>
+                            
+                            <div className="chart">
+                                <h4 style={{textAlign: 'center'}}>Your {summary?.transactionCurrency} earnings</h4>
+                                <Doughnut data={
+                                   {
+                                        labels: ['deposit', 'earnings'],
+                                        datasets: [
+                                          {
+                                            label: summary?.transactionCurrency || "USD" + " earnings",
+                                            data: [summary?.totalDeposits, summary?.totalEarnings],
+                                            backgroundColor: ['yellow', 'lightseagreen'],
+                                          }
+                                        ]
+                                      }
+                                }
+                                />
+
+                            </div>
+                            </div>
+                        )
+                    )}
+
+
+                </div>
+               }
+            </main>
+        </div>
+    )
+    
+}
+
 /**
  * @route /acct/home
  * @param {*} props 
@@ -925,6 +1222,7 @@ const UserAccountComponent /*: ReactComponent */ = (props) => {
     <>
     <div className="userAcctHomePage">
         <DisplayWelcome user={User} pageName="User Account" />
+        <Dashboard user={User}/>
         <ViewTransactionHistory user={User}/>
         <RequestFundAccount user={User}/>
         <RequestWithdrawal user={User}/>

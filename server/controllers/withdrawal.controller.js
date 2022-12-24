@@ -2,6 +2,7 @@ const { IWithdrawalService } = require("../services/withdrawal.service.js");
 const { IInvestmentService } = require("../services/investment.service.js");
 const { ITransactionService } = require("../services/transaction.service.js");
 const { IAccountService } = require("../services/account.service.js");
+const { Utils } = require("../utils/utils.utils.js");
 
 
 // [ApiController]
@@ -129,6 +130,60 @@ class WithdrawalController{
         }
     }
 
+
+    /** 
+     * @method GET /getacctsummary
+     * @protected (userId in req.userId)
+     * @payload {}
+     * @params {}, @query {}
+     * @returns {Promise<{
+            [key: string]: {
+                totalDeposits?: Number, 
+                totalEarnings?: Number, 
+                totalProfitFromInvestments?: Number,
+                transactionCurrency?: String, 
+                avgROI?: Number,
+                availableWithdrawableBalance?: number,
+                pendingWithdrawableBalance?: number
+            }>}
+    */
+    getAccountSummary = async (req /**Request*/, res /**Response */) => {
+        try{
+            // get all valid successful transactions
+            const userId /*: ObjectId */ = req.userId;
+            const userAcct /*: AccountModel */ = await this.accountService.retrieveAccount(userId);
+
+            if(userAcct == null){
+                return res.status(403).json({error: "No user account for user"})
+            }
+
+            const acctId /**ObjectId */ = userAcct._id;
+
+            const {withdrawableTransactions  /**TransactionModel[] */} = await this.transactionService
+                        .retrieveWithdrawableTransactions(acctId);
+            const getAllWithdrawableAndPendingBalance /**
+                {
+                [key: string]: {
+                    availableWithdrawableBalance: number;
+                    pendingWithdrawableBalance: number;
+                }
+            */ = await this.withdrawalService
+                .getAllWithdrawableAndPendingBalance(withdrawableTransactions, acctId);
+
+            // get userTransactionsSummary
+            let valid = await this.transactionService.userTransactionsSummary(acctId)
+            const getUserTransactionsSummary /** {[Key: String]: TransactionsSummaryDTO} */= await this
+                .transactionService.userTransactionsSummary(acctId);
+            
+            // merge withdrawals and user Transactions summary
+            const summary = Utils.mergeObjects(getUserTransactionsSummary, getAllWithdrawableAndPendingBalance);
+            
+            return res.status(200).json({summary});
+        } catch(err /**Error */){
+            console.log(err)
+            return res.status(500).json({error: err.message})
+        }
+    }
     /** 
      * @method GET /getwithdrawals
      * @desc Allows only admin retrieve withdrawals
@@ -206,7 +261,13 @@ class WithdrawalController{
             // console.log(err);
             return res.status(500).json({error: err.message});
         }
+
+       
      }
+
+    
 }
+
+
 
 module.exports = {WithdrawalController}
