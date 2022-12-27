@@ -97,3 +97,12 @@ const obj2 = {
 }
 
 console.log("merged => ", mergeObjects(obj1, obj2))
+
+function addDays(date, days) {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  }
+
+const x = new Date()
+console.log({x: x, sevenDaysLater: addDays(x, 7).getTime()})

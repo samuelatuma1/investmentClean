@@ -142,6 +142,18 @@ class Utils {
         }
         return return_object;
     }
+
+    /**
+     * 
+     * @param {Date} date 
+     * @param {Number} days  No of days to add
+     * @returns {Date}
+     */
+    static addDays = (date /** Date */, days /** Number */) /** Date */ => {
+        const result = new Date(date);
+        result.setDate(result.getDate() + days);
+        return result;
+      }
 }
 
 module.exports = {Utils}

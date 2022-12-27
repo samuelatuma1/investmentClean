@@ -1,5 +1,6 @@
 const {Transaction} = require("../models/transaction.model");
 const {AccountService} = require("./account.service.js");
+const { Utils } =  require("../utils/utils.utils");
 
 const TransactionsSummaryDTO = {
     totalDeposits: Number, 
@@ -135,7 +136,19 @@ class TransactionService /*: implements ITransactionService */ {
         result.setDate(result.getDate() + days);
         return result;
       }
-      
+    
+      /**
+       * 
+       * @param {Transaction} transaction 
+       */
+    calculateCurrentValue = (transaction /** TransactionModel */) => {
+        // get Days to cash out from start date
+        let cashOutTimeDelta /** Number */ = Utils.addDays(transaction.createdAt, transaction.investmentId.waitPeriod).getTime() - transaction.createdAt;
+        const timeDelta /** Number */ = new Date().getTime() - transaction.createdAt;
+        let currentValue /** Date */ = timeDelta / cashOutTimeDelta;
+        return currentValue >= 1 ? 1 : currentValue;
+
+    }
     /**
      * 
      * @param {ObjectId} acctId : -> account Id
@@ -153,16 +166,16 @@ class TransactionService /*: implements ITransactionService */ {
             const acctTransactions /** Array<TransactionModel> */ = [];
             for(let transaction /**TransactionModel */ of transactions){
                 const transactionObject /**TransactionModel */ = transaction.toObject();
-                const timeDelta /** number */ = new Date().getTime()
+                const timeDelta /** Number */ = new Date().getTime()
                                                 - new Date(transactionObject.createdAt).getTime();
                 const daysPassedSinceTransaction /**number */= Math.floor(timeDelta / day);
                 transactionObject.days = daysPassedSinceTransaction;
 
                 const percent /**number */ = 0.01 * transactionObject.investmentId.yieldValue;
                 const waitPeriod /**number */ = transactionObject.investmentId.waitPeriod;
-                const daysFraction /**number */ = this.#transactionCurrentValue(
-                    daysPassedSinceTransaction, waitPeriod);
-                const yieldOverTime /**number */ = daysFraction * (percent);
+                const daysFraction /**number */ = this.#transactionCurrentValue(daysPassedSinceTransaction, waitPeriod);
+                const daysFractionMicro /**number */ = this.calculateCurrentValue(transactionObject);
+                const yieldOverTime /**number */ = daysFractionMicro * (percent);
                 const currentValue /**number */ = transactionObject.amount * (1 + yieldOverTime);
                 transactionObject.currentValue =  +currentValue.toFixed(2);
 
@@ -220,6 +233,8 @@ class TransactionService /*: implements ITransactionService */ {
         }
         return updatedTransaction;
     }
+
+
 
     /**
      * 

@@ -1,6 +1,6 @@
 const mongoose /**Mongoose */ = require("mongoose");
 
-const FileSchema /**Schema */ = new mongoose.Schema({
+const AboutUsImageSchema /**Schema */ = new mongoose.Schema({
     fieldname: {
         type: String,
     },
@@ -22,8 +22,12 @@ const FileSchema /**Schema */ = new mongoose.Schema({
     },
     size: {
         type: Number,
+    },
+    aboutUsId: {
+        type: mongoose.SchemaTypes.ObjectId,
+        required: true
     }
 })
 
-const File /**Model */ = mongoose.model("File", FileSchema);
-module.exports = {File}
+const AboutUsImage /**Model */ = mongoose.model("AboutUsImage", AboutUsImageSchema);
+module.exports = {AboutUsImage};

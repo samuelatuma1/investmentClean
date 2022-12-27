@@ -268,7 +268,7 @@ section.statusBtns .clickedInvestmentStatusBtn{
 
 .depositsAndEarningsMain > section{
     /* max-width: 300px; */
-    min-width: 170px;
+    min-width: 140px;
     padding: 10px;
     border-radius: 20px;
     background-color: white;
@@ -301,7 +301,6 @@ section.statusBtns .clickedInvestmentStatusBtn{
 .chart{
     margin-top: 10px;
     background-color: white;
-    max-width: 100%;
     border-radius: 20px;
     padding: 10px;
 }

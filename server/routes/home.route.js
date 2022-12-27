@@ -15,11 +15,12 @@ const { InvestmentService } = require("../services/investment.service.js");
 const {HowToEarnService} = require("../services/homepage.howToEarn.service.js");
 const {ReviewService} = require("../services/home.review.service.js");
 const {FooterService} = require("../services/footer.service.js");
+const {AboutUsService} = require("../services/aboutus.service.js");
 
 const uploadImageHandler = new UploadImage();
 const home /**HomeController */ = new HomeController(new IntroService(), new AuthService(), 
 new StatsService(), new CoinRatesService(), new InvestmentService(), 
-new HowToEarnService(), new ReviewService(), new FooterService());
+new HowToEarnService(), new ReviewService(), new FooterService(), new AboutUsService());
 
 // @Path /home
 homeRoute.route("/intro")
@@ -62,5 +63,19 @@ homeRoute.route("/getreviews")
 homeRoute.route("/footer")
         .post(ValidateToken.validateToken, home.createFooter)
         .get(home.getFooter);
+
+homeRoute.route("/aboutus")
+        .post(ValidateToken.validateToken, home.createAboutUs)
+        .get(home.getAboutUs);
+
+homeRoute.route("/aboutusimage")
+        .post(
+                ValidateToken.validateToken,
+                uploadImageHandler.uploadImg().single("img"),
+                home.addAboutUsImage
+        )
+
+homeRoute.route("/aboutusimage/:aboutusid")
+        .get(home.getAboutUsImage)
 module.exports = {homeRoute};
 

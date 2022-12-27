@@ -1181,7 +1181,9 @@ const SummaryDTO = {
                             
                             <div className="chart">
                                 <h4 style={{textAlign: 'center'}}>Your {summary?.transactionCurrency} earnings</h4>
-                                <Doughnut data={
+                                {/*div with style added to force image Doughnut to center */}
+                                <div style={{maxWidth: '300px', margin: 'auto'}}>
+                                <Doughnut  data={
                                    {
                                         labels: ['deposit', 'earnings'],
                                         datasets: [
@@ -1194,6 +1196,7 @@ const SummaryDTO = {
                                       }
                                 }
                                 />
+                                </div>
 
                             </div>
                             </div>

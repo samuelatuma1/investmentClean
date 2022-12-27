@@ -6,7 +6,17 @@ const { IInvestmentService } = require("../services/investment.service");
 const {IHowToEarnService} = require("../services/homepage.howToEarn.service");
 const {IReviewService} = require("../services/home.review.service.js");
 const {IFooterService, FooterDTO} = require("../services/footer.service.js");
+const { IAboutUsService, AboutUsDTO } = require("../services/aboutus.service");
 // DTOS
+const AboutUsImageDTO = {
+    fieldname : String,
+    mimeType: String,
+    destination: String,
+    filename: String,
+    path: String,
+    size: Number,
+    aboutUsId: String
+}
 const Stats /** {[key: string] : {[key: string] : string}} */ = {
     stats1: {
         data: String,
@@ -56,6 +66,9 @@ class HomeController {
     /**IFooterService */
     footerService
 
+    /** IAboutUsService */
+    aboutUsService
+
     /**
      * @param {IIntroService} introService 
      * @param {IAuthService} authService
@@ -65,6 +78,7 @@ class HomeController {
      * @param {IHowToEarnService} howToEarnService
      * @param {IReviewService} reviewService
      * @param {IFooterService} footerService
+     * @param {IAboutUsService} aboutUsService 
      */
     constructor( 
         introService /**IIntroService */, 
@@ -74,7 +88,8 @@ class HomeController {
         investmentService /**IInvestmentService */,
         howToEarnService /**IHowToEarnService */,
         reviewService /**IReviewService */,
-        footerService /**IFooterService */
+        footerService /**IFooterService */,
+        aboutUsService /** IAboutUsService */
         ) {
 
         this.introService = introService;
@@ -85,6 +100,7 @@ class HomeController {
         this.howToEarnService = howToEarnService;
         this.reviewService = reviewService;
         this.footerService = footerService;
+        this.aboutUsService = aboutUsService;
     }
 
     /** 
@@ -253,7 +269,6 @@ class HomeController {
             // console.log({isAdmin});
             if(!isAdmin)
                 return res.status(403).json({message: "You are not permitted to upload image"});
-
             
             const fileData /**FileSchema  */ = req.file;
             if(!fileData){
@@ -267,6 +282,8 @@ class HomeController {
             return res.status(400).json({error: ex.message});
         }
      }
+
+     
 
       /**
       * @method GET /howtoearnimage
@@ -454,6 +471,113 @@ class HomeController {
                 return res.status(400).json({error: ex.message});
             }
       }
+
+
+    /**
+     *  @method POST /aboutus
+     *  @desc Allows only admin add aboutus
+     *  @protected (userId in req.userId | admin access required)
+     *  @param {{body: AboutUsDTO}} req,
+     *  @param {{status: Stats}} res, 
+     * @returns {Response<Stats>} 
+     */
+     createAboutUs = async ( req /**Request */, res /**Response */) /**ResponseEntity<Stats> */ => {
+        const userId /**ObjectId */ = req.userId;
+        const isAdmin /*boolean*/ = await this.authService.verifyIsAdminFromId(userId);
+
+        if(!isAdmin)
+            return res.status(403).json({message: "You are not permitted to create about us"});
+        
+        const { title /** String */, body /** String */} = req.body;
+        if(!title || !body)
+            return res.status(401).json({message: "Please, include a title and body"});
+
+        const createdAboutUs/** AboutUsDTO */ = await this.aboutUsService.addAboutUs({title, body});
+
+        return res.status(200).json({aboutUs: createdAboutUs})
+     }
+
+     /**
+      * @method GET /aboutus
+      * @PROTECTED Accessible to all users
+      * @returns {{aboutus: AboutUsDTO}}
+      */
+     getAboutUs = async (req/**Request */, res /**Response */) /**ResponseEntity<AboutUs> */ => {
+        try{
+            const aboutUs /** AboutUs */ = await this.aboutUsService.getAboutUs();
+            return res.status(200).json({aboutUs})
+        }
+        catch(ex /** Exception */){
+
+        }
+     }
+
+     /**
+     *  @method POST /aboutusimage
+     *  @desc Allows only admin upload images for about us image
+     *  @protected (userId in req.userId | admin access required)
+     * 
+     *  @param {file: {
+      *   fieldname: String,
+      *   mimetype: String,
+      *   destination: String,
+      *   filename: String,
+      *   path: String,
+      *   size: Number
+      *  }, 
+      * body{
+      *    aboutUsId: ObjectId
+      * }} req,
+     *  @param {{status: Stats}} res, 
+     * @returns {Response<>}
+     */
+    addAboutUsImage = async (req /**Request */, res /**Response */)/**ResponseEntity<> */ => {
+       try{
+           // Ensure user is admin
+           const userId /**ObjectId */ = req.userId;
+           const isAdmin /*boolean*/ = await this.authService.verifyIsAdminFromId(userId);
+           // console.log({isAdmin});
+           if(!isAdmin)
+               return res.status(403).json({message: "You are not permitted to upload image"});
+
+           // arrange
+           const file /** AboutUsImageDTO */ = req.file;
+           const { aboutUsId /** ObjectId */} = req.body;
+           if(aboutUsId === null){
+               return res.status(403).json({message: "Please, include an about us id"});
+           }
+           console.log({file, body: req.body})
+           file.aboutUsId = aboutUsId;
+
+           // act
+           const savedImage /** AboutUsImage */=  await this.aboutUsService.addAboutUsImage(file, req);
+
+           return res.status(201).json({aboutUsImage: savedImage });
+       }
+       catch(ex /** Message */){
+           return res.status(400).json({error: ex.message});
+       }
+    }
+
+
+     /**
+     *  @method GET /aboutusimage/:aboutusid
+     *  @desc Allows everyone access aboutusimage
+     *  @protected everyone has access
+     * */
+    getAboutUsImage =  async (req /**Request */, res /**Response */)/**ResponseEntity<> */ => { 
+
+        try{
+            // get Id from req
+
+            const aboutusId /**ObjectId*/ = req.params.aboutusid;
+            const aboutUsImage = await this.aboutUsService.getAboutUsImage(req, aboutusId);
+            return res.status(200).json({aboutUsImage});
+        }
+        catch(ex /** Message */){
+            return res.status(400).json({error: ex.message});
+        }
+    }
 
 }
 
