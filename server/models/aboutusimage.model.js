@@ -25,7 +25,8 @@ const AboutUsImageSchema /**Schema */ = new mongoose.Schema({
     },
     aboutUsId: {
         type: mongoose.SchemaTypes.ObjectId,
-        required: true
+        required: true,
+        ref: "AboutUs"
     }
 })
 

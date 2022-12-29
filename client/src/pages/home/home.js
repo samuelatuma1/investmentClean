@@ -3,9 +3,8 @@
 import { useState, useEffect } from "react";
 
 // Static files
-import homePageBackgroundIntroImg from "../../static/home/intro/imageforbg.webp";
 import imgBg from "../../static/home/img.svg";
-
+import ourservicedefaultimg from "../../static/service.png";
 import avatar from "../../static/home/avatar.svg";
 
 
@@ -286,6 +285,70 @@ const HowToEarn /** Component */ = (props /** {[key: String]: any} */) => {
         </>
     )
 }
+const OurServicesDTO = {
+    _id: "",
+    title: "",
+    body: "",
+    image: {
+        _id: "",
+        imgUrl: ""
+    }
+}
+const OurServices /** Component */= () /** JSX.Element */ => {
+    // States
+    const [ourServices, setOurServices] = useState/**<Array<OurServiceDTO>>*/([]);
+    const [loading, setLoading] = useState/**<boolean>*/(false);
+
+    //Effects
+    useEffect(() => {
+        getOurServices();
+    }, [])
+    async function getOurServices(){
+        const ourServicesRequest /**Response*/ = await fetch("/home/ourservices");
+        if(ourServicesRequest.ok){
+            const ourServicesResponse /**Array<OurServiceDTO> */ = (await ourServicesRequest.json()).ourServices;
+            setOurServices(ourServicesResponse);
+        }
+    }
+    return(
+        
+            loading ? 
+            <Loading /> : 
+            <div className="ourServices">
+                {
+                    ourServices.length > 0 ? 
+                    <div>
+                        <h2 style={{textAlign: 'center'}}>Our Services</h2>
+                        <main className="homeOurServiceMain">
+                            {
+                                ourServices.map((service, idx) => (
+                                    <section key={idx} className="homeOurServiceSection">
+                                        <div>
+                                            <h3>{service?.title}</h3>
+                                            <p>{service?.body}</p>
+                                        </div>
+                                        <div>
+                                            {
+                                                service?.image?.imgUrl ?
+                                                <img crossOrigin="anonymous"
+                                                src={service.image.imgUrl} alt="service"
+                                                />:
+                                                <img  crossOrigin="anonymous"
+                                                src={ourservicedefaultimg} alt="service"
+                                                />
+                                            }
+                                        </div>
+                                    </section>
+                                ))
+                            }
+                        </main>
+                    </div> :
+                    <></>
+                }
+            </div>
+    )
+}
+
 
 const Investments /**Component */ = (props /** {[key: String]: any} */)/** JSX */ => {
     // States
@@ -389,7 +452,7 @@ const ReviewDTO = {
     review: String,
     country: String
 }
-const Reviews /** Component */ = (props /** {[key: String]: any} */) => {
+const Reviews /** Component */ = (props /** {[key: String]: any} */) /** JSX.Element */ => {
     // states
     const [loading /**boolean */,  setLoading /** Funct<T, T> */] = useState(false);
     const [reviews /**Array<ReviewDTO> */, setReviews /**Funct<T, T> */] =useState([]);
@@ -457,6 +520,7 @@ const HomePage /**Component */ = (props) => {
         <NavigationBar active='' />
         <HomePageIntro />
         <CoinsRate />
+        <OurServices />
         <HowToEarn />
         <Investments />
         <Reviews />

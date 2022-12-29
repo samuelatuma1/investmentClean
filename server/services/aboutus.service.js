@@ -73,6 +73,7 @@ class AboutUsService extends IAboutUsService{
 
     /**
      * @desc returns AboutUsImage with imgUrl property or nukk
+     * @param {Request} req
      * @param {Objectid} aboutusId 
      * @returns {Promise<AboutUsImage>}
      */

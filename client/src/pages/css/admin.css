@@ -194,3 +194,13 @@
     padding: 10px;
     background-color: white;
 }
+div.ourService img{
+    max-width: 98%;
+    display: inline-block;
+    margin: auto;
+}
+div.ourService{
+    margin-bottom: 20px;
+    background-color: white;
+    padding: 10px;
+}

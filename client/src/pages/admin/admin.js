@@ -19,6 +19,8 @@ import {BiHide, BiTimeFive } from "react-icons/bi";
 import {GiMoneyStack} from "react-icons/gi";
 import {AiFillMinusSquare, AiOutlineTransaction, AiOutlineUser} from "react-icons/ai";
 
+// Utilities
+import { Utilities } from "../../general/utilities";
 //Styling
 import "../css/admin.css";
 
@@ -1270,11 +1272,6 @@ const HomePageIntro /**Component */ = (props /**{user: User} */) /**JSX */ => {
 }
 
 
-
-
-
-
-
 const StatsDTO/** {[key: string] : {[key: string] : string}} */ = {
     stats1: {
         data: String,
@@ -2247,12 +2244,321 @@ const HomePageAboutUs /** Component */ = (props /**{user: User} */) /**JSX */ =>
     )
 }
 
+const OurServicesDTO = {
+    _id: "",
+    title: "",
+    body: "",
+    image: {
+        _id: "",
+        path: "",
+        ourServicesId: "",
+        imgUrl: ""
+    }
+}
+
+const HomePageOurServices /** Component */ = (props /**{user: User} */) /**JSX */ => {
+    // Props data
+    const User /*: UserModel */= props.user || {};
+    const token  /* String */= "Bearer " + User.token || "";
+    
+    // States
+    const [loading, setLoading] = useState(false);
+    const generatedServices /**<Array<OurServicesDTO> */ = Utilities.generateDataXTimes(OurServicesDTO, 5)
+    const [img, setImg] = useState(null);
+    const [ourServices, setOurServices] = useState/**<Array<OurServicesDTO> */(generatedServices);
+
+    // Ref
+    const toggleRef /** Ref */ = useRef(null);
+
+    /**
+     * @param {Array<OurServicesDTO>} valuesToImprint 
+     * @param {Array<OurServicesDTO>} original 
+     * @returns {Array<OurServicesDTO>}
+     */
+    function imprintServices (valuesToImprint/**Array<OurServicesDTO> */, original /** Array<OurServicesDTO> */){
+
+        for(let idx /** Number */ = 0; idx < valuesToImprint.length; idx++){
+            original[idx] = valuesToImprint[idx];
+        }
+        return original;
+    }
+
+
+    // Effects
+   useEffect(() => {
+        fetchOurServices()
+   }, [])
+    const fetchOurServices = async () /** void */ => {
+        setLoading(true);
+        const url /** String */ = "/home/ourservices";
+        const ourServicesReq /** Response */ = await fetch(url);
+        if(ourServicesReq.ok){
+            const ourServicesResponse /** Array<OurServicesDTO> */= (await ourServicesReq.json()).ourServices;
+            const updatedServices /** Array<OurServicesDTO>*/ = imprintServices(ourServicesResponse, ourServices);
+            console.log(updatedServices);
+            setOurServices(prev => {
+                const updatedServices /** Array<OurServicesDTO>*/ = imprintServices(ourServicesResponse, ourServices);
+                return updatedServices;
+            });
+            setLoading(false);
+        }
+        setLoading(false);
+
+    }
+   
+    
+    
+    // Events
+    function toggleRefDisplay(e){
+        toggleRef.current.classList.toggle("hide");
+    }
+
+    function updateImage(e /**Event */) /**Void */{
+        console.log(e.target.files[0]);
+        setImg(e.target.files[0]);
+    }
+
+    function findByIdAndUpdateImage(service_id /** ObjectId */, imageRes /**{imgUrl: String} */){
+        const services = ourServices.slice();
+        for(let service of services){
+            if(service._id === service_id){
+                service.image = imageRes;
+            }
+        }
+        setOurServices(services);
+    }
+
+
+    async function uploadImage(e /**Event */) /**void*/{
+        e.preventDefault();
+        if(!img){
+            alert("Please, add a valid image");
+            return ;
+        }
+        const service_id = e.target.id;
+        if(!service_id){
+            alert("You can only submit images for existing services")
+            return;
+        }
+
+        // Get aboutusId
+       
+        // create form
+        const formData /**FormData */ = new FormData();
+        formData.append("img", img);
+        formData.append("ourServicesId",service_id);
+        // Update Intro form
+        const url /**String */ =  "/home/ourservicesimage";
+        setLoading(true);
+        const imageReq /**Request */ = await fetch(url, {
+            method: "POST",
+            headers: {
+                "Authorization": token
+            },
+            body: formData
+        });
+        if(imageReq.ok){
+            setLoading(false);
+            const imageRes /**Response */ = (await imageReq.json()).ourServicesImage;
+            findByIdAndUpdateImage(service_id, imageRes)
+        }
+    }
 
 
 
+    // States
+    
 
 
+    // Events
+    /**
+     * @param {{title: String, body: String}} data 
+     * @returns 
+     */
+    async function createNewOurServices (data){
+        const addOurServiceReq /** Response */= await fetch("/home/ourservices", {
+            method: "POST",
+            headers: {
+                Authorization: token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(data)
+        })
+        if(addOurServiceReq.ok){
+            return (await addOurServiceReq.json()).ourService;
+        }
+        return null
+    }
 
+    /**
+     * @param {ObjectId} _id
+     * @param {{title: String, body: String}} data 
+     * @returns 
+     */
+    async function updateService(_id /** ObjectId */,  data /**{title: String, body: String} */){
+        const updateServiceRequest /** Response */ = await fetch(`/home/ourservices/${_id}`, {
+            method: "PATCH",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: token
+            },
+            body: JSON.stringify(data)
+        })
+        if(updateServiceRequest.ok){
+            const updatedService /** OurService*/ = (await updateServiceRequest.json()).ourService;
+            return updatedService;
+        }
+        return null;
+    }
+    function updateIdOfService(_id /** ObjectId */, idxToUpdate /** Number */){
+        const services /** Array<OurServiceDTO> */= ourServices.slice();
+        const newServiceAtIdx /** OurServiceDTO */= services[idxToUpdate];
+        const updatedServiceAtIdx = {...newServiceAtIdx, _id};
+        services[idxToUpdate] = updatedServiceAtIdx;
+        setOurServices(services);
+    }
+    function updateServiceAction(e /** EventObject */) /** void */{
+        // get index to update 
+        const idxToUpdate /**Number */ = parseInt(e.target.id);
+        const services /** Array<OurServiceDTO> */= ourServices.slice();
+        const newServiceAtIdx /** OurServiceDTO */= services[idxToUpdate];
+        const updatedServiceAtIdx = {...newServiceAtIdx, [e.target.name]: e.target.value};
+        services[idxToUpdate] = updatedServiceAtIdx;
+        setOurServices(services);
+    }
+
+    
+    
+    async function submitServiceAction(e /** EventObject */) /** */{
+        e.preventDefault();
+        // get the particular service that is being submitted
+        const idx /** Number */ =  e.target.id;
+        const {title, body, _id} = ourServices[idx];
+        if(!title.trim() || !body.trim()){
+            alert("Please, include text in body and title");
+            return;
+        }
+        // if it has an id, trigger update,
+        if(_id){
+            const updateOurService /** OurService */= await updateService(_id, {title, body} );
+            if(updateOurService){
+                alert("Service successfully updated")
+            }
+            else{
+                alert("Something went wrong, please try again");
+            }
+        } else{
+            const newService /** OurServiceDTO */= await createNewOurServices({title, body});
+            if(newService){
+                updateIdOfService(newService._id , idx)
+                alert("service successfully created")
+            }
+        }
+        // else trigger submit
+    }
+   
+    return (<>
+        {
+            loading ? <Loading /> :
+            <div className="container">
+                <h3 className="containerDesc">
+                    Update our services
+                    <button onClick={toggleRefDisplay}>Display</button>
+                </h3>
+
+                <main className="toggleRef hide" ref={toggleRef}>
+                    {
+                        loading ? <Loading />:
+
+                    <div >
+                    <h3>Upload our services</h3>
+                    <section>
+                        {
+                            ourServices.map((service, idx) => (
+                                <div className="ourService" key={idx}>
+                                    <h3>Service {idx + 1}</h3>
+                                    <form className="" onSubmit={submitServiceAction} id={idx}>
+                                        <label htmlFor="title">
+                                            <h3>Service Title</h3>
+                                            <input 
+                                             name="title"
+                                             id={idx}
+                                             value={service.title}
+                                             minLength={2}
+                                             required={true}
+                                             onChange={updateServiceAction}
+                                             />
+                                        </label>
+
+                                        <label htmlFor="body">
+                                            <h3>Service body</h3>
+                                            <textarea 
+                                             name="body"
+                                             required={true}
+                                             id={idx}
+                                             minLength={2}
+                                             value={service.body}
+                                             onChange={updateServiceAction}
+                                             />
+                                        </label>
+
+                                        <button>
+                                            Update Service
+                                        </button>
+                                    </form>
+
+                                    <form id={service?._id} onSubmit={uploadImage}>
+                                        <label htmlFor="serviceImage">
+                                        <section>
+                                            {
+                                                service?.image?.imgUrl ?
+                                                <img crossOrigin="anonymous" src={service.image.imgUrl} style={{maxWidth: '100%'}} alt="Service image" /> : <h3>
+                                                    No image for this service uploaded yet
+                                                </h3>
+                                            }
+                    </section>
+                                            <input
+                                            type="file"
+                                            accept="images/*"
+                                            name="img"
+                                            required={true}
+                                            onChange={updateImage}
+                                            />
+                                            <button>
+                                                Update Image for Service {idx + 1}
+                                            </button>
+                                        </label>
+                                    </form>
+                                </div>
+                            ))
+                        }
+                    </section>
+                    {/* 
+
+                    <form onSubmit={uploadImage}>
+                        <h3>Upload About Us Image</h3>
+                        <p>Please, make sure you have about us title and body, before uploading an image</p>
+                        <label htmlFor="img">
+                        <h3>About Us Image</h3>
+                        <input 
+                        type="file" 
+                        required={true}
+                        accept="image/*"
+                        name="img"
+                        onChange={updateImage}
+                        />
+                        <button>Upload Image</button>
+                    </label>
+                    </form> */}
+                </div>  
+                    }
+
+                </main>
+          </div>
+        }
+    </>
+    )
+}
 
 
 
@@ -2276,6 +2582,7 @@ const UserAdminComponent /*: ReactComponent */ = (props) => {
        <HomePageHowToEarn  user={User} />
        <HomepageReview user={User} /> 
        <HomePageAboutUs user={User} />
+       <HomePageOurServices user={User} />
        <Footer user={User} />
     </div>)
     

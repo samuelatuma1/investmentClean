@@ -6,7 +6,8 @@ const { IInvestmentService } = require("../services/investment.service");
 const {IHowToEarnService} = require("../services/homepage.howToEarn.service");
 const {IReviewService} = require("../services/home.review.service.js");
 const {IFooterService, FooterDTO} = require("../services/footer.service.js");
-const { IAboutUsService, AboutUsDTO } = require("../services/aboutus.service");
+const { IAboutUsService, AboutUsDTO } = require("../services/aboutus.service.js");
+const {IOurServicesService, OurServicesDTO, OurServicesImageDTO} = require("../services/aboutus.service.js");
 // DTOS
 const AboutUsImageDTO = {
     fieldname : String,
@@ -69,6 +70,8 @@ class HomeController {
     /** IAboutUsService */
     aboutUsService
 
+    /** IOurServicesService */
+    ourServices
     /**
      * @param {IIntroService} introService 
      * @param {IAuthService} authService
@@ -79,6 +82,7 @@ class HomeController {
      * @param {IReviewService} reviewService
      * @param {IFooterService} footerService
      * @param {IAboutUsService} aboutUsService 
+     * @param {IOurServicesService} ourServices
      */
     constructor( 
         introService /**IIntroService */, 
@@ -89,7 +93,8 @@ class HomeController {
         howToEarnService /**IHowToEarnService */,
         reviewService /**IReviewService */,
         footerService /**IFooterService */,
-        aboutUsService /** IAboutUsService */
+        aboutUsService /** IAboutUsService */,
+        ourServices /** IOurServicesService */
         ) {
 
         this.introService = introService;
@@ -101,6 +106,7 @@ class HomeController {
         this.reviewService = reviewService;
         this.footerService = footerService;
         this.aboutUsService = aboutUsService;
+        this.ourServices = ourServices;
     }
 
     /** 
@@ -482,19 +488,26 @@ class HomeController {
      * @returns {Response<Stats>} 
      */
      createAboutUs = async ( req /**Request */, res /**Response */) /**ResponseEntity<Stats> */ => {
-        const userId /**ObjectId */ = req.userId;
-        const isAdmin /*boolean*/ = await this.authService.verifyIsAdminFromId(userId);
+        try{
+            const userId /**ObjectId */ = req.userId;
+            const isAdmin /*boolean*/ = await this.authService.verifyIsAdminFromId(userId);
 
-        if(!isAdmin)
-            return res.status(403).json({message: "You are not permitted to create about us"});
-        
-        const { title /** String */, body /** String */} = req.body;
-        if(!title || !body)
-            return res.status(401).json({message: "Please, include a title and body"});
+            if(!isAdmin)
+                return res.status(403).json({message: "You are not permitted to create about us"});
+            
+            const { title /** String */, body /** String */} = req.body;
+            if(!title || !body)
+                return res.status(401).json({message: "Please, include a title and body"});
 
-        const createdAboutUs/** AboutUsDTO */ = await this.aboutUsService.addAboutUs({title, body});
+            const createdAboutUs/** AboutUsDTO */ = await this.aboutUsService.addAboutUs({title, body});
 
-        return res.status(200).json({aboutUs: createdAboutUs})
+            return res.status(200).json({aboutUs: createdAboutUs})
+        }
+
+        catch( ex /**Exception */){
+            // console.log(ex);
+            return res.status(400).json({error: ex.message});
+        }
      }
 
      /**
@@ -507,10 +520,13 @@ class HomeController {
             const aboutUs /** AboutUs */ = await this.aboutUsService.getAboutUs();
             return res.status(200).json({aboutUs})
         }
-        catch(ex /** Exception */){
-
+        catch( ex /**Exception */){
+            // console.log(ex);
+            return res.status(400).json({error: ex.message});
         }
      }
+
+    
 
      /**
      *  @method POST /aboutusimage
@@ -578,6 +594,130 @@ class HomeController {
             return res.status(400).json({error: ex.message});
         }
     }
+
+
+
+    /**
+     *  @method POST /ourservices
+     *  @desc Allows only admin add ourservices
+     *  @protected (userId in req.userId | admin access required)
+     *  @param {{body: OurServicesDTO}} req,
+     * @returns {Response<Stats>} 
+     */
+     createOurServices = async ( req /**Request */, res /**Response */) /**ResponseEntity<Stats> */ => {
+        try{
+            const userId /**ObjectId */ = req.userId;
+            const isAdmin /*boolean*/ = await this.authService.verifyIsAdminFromId(userId);
+
+            if(!isAdmin)
+                return res.status(403).json({message: "You are not permitted to create our services"});
+            
+            const { title /** String */, body /** String */} = req.body;
+            if(!title || !body)
+                return res.status(401).json({message: "Please, include a title and body"});
+
+            const ourService/** AboutUsDTO */ = await this.ourServices.addOurServices({title, body});
+
+            return res.status(200).json({ourService})
+        }
+ 
+        catch( ex /**Exception */){
+            // console.log(ex);
+            return res.status(400).json({error: ex.message});
+        }
+     }
+
+
+
+     /**
+      * @method GET /ourservices
+      * @PROTECTED Accessible to all users
+      * @returns {Promise<{ourServices: Array<OurServices>}>}
+      */
+      getOurServices = async (req/**Request */, res /**Response */) /**ResponseEntity<AboutUs> */ => {
+        try{
+            const ourServices /** Array<OurServicesAndImages>*/ = await this.ourServices.getAllOurServicesAndImages(req);
+            return res.status(200).json({ourServices});
+        }
+        catch( ex /**Exception */){
+            // console.log(ex);
+            return res.status(400).json({error: ex.message});
+        }
+     }
+
+
+     /**
+      * @method PATCH /ourservices/:ourserviceid
+      * @PROTECTED  Allows only admin update ourservices
+      * @param {{body: OurServicesDTO}} req,
+      * @returns {Promise<{ourServices: Array<>}>}
+      */
+      updateOurServices = async (req/**Request */, res /**Response */) /**ResponseEntity<AboutUs> */ => {
+        try{
+            const userId /**ObjectId */ = req.userId;
+            const isAdmin /*boolean*/ = await this.authService.verifyIsAdminFromId(userId);
+
+            if(!isAdmin)
+                return res.status(403).json({message: "You are not permitted to create our services"});
+
+            const id /** ObjectId */ = req.params.ourserviceid
+            const ourService /** Array<OurServicesAndImages>*/ = await this.ourServices.updateOurService(id, req.body);
+            return res.status(200).json({ourService});
+        }
+        catch( ex /**Exception */){
+            // console.log(ex);
+            return res.status(400).json({error: ex.message});
+        }
+     }
+
+
+     /**
+     *  @method POST /ourservicesimage
+     *  @desc Allows only admin upload images for ourservices image
+     *  @protected (userId in req.userId | admin access required)
+     * 
+     *  @param {file: {
+      *   fieldname: String,
+      *   mimetype: String,
+      *   destination: String,
+      *   filename: String,
+      *   path: String,
+      *   size: Number
+      *  }, 
+      * body{
+      *    ourServicesId: ObjectId
+      * }} req,
+     *  @param {{status: Stats}} res, 
+     * @returns {Response<>}
+     */
+    addOurServicesImage = async (req /**Request */, res /**Response */)/**ResponseEntity<> */ => {
+       try{
+           // Ensure user is admin
+           const userId /**ObjectId */ = req.userId;
+           const isAdmin /*boolean*/ = await this.authService.verifyIsAdminFromId(userId);
+           // console.log({isAdmin});
+           if(!isAdmin)
+               return res.status(403).json({message: "You are not permitted to upload image"});
+
+           // arrange
+           const file /** OurServicesImageDTO */ = req.file;
+           const { ourServicesId /** ObjectId */} = req.body;
+           if(ourServicesId === null){
+               return res.status(403).json({message: "Please, include an ourServices id"});
+           }
+           console.log({file, body: req.body})
+           file.ourServicesId = ourServicesId;
+
+           // act
+           const savedImage /** OurServicesImage */=  await this.ourServices.addOurServicesImage(file, req);
+           console.log({savedImage});
+           return res.status(201).json({ourServicesImage: savedImage });
+       }
+       catch(ex /** Message */){
+           return res.status(400).json({error: ex.message});
+       }
+    }
+
 
 }
 

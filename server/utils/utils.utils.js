@@ -154,6 +154,20 @@ class Utils {
         result.setDate(result.getDate() + days);
         return result;
       }
+
+    /**
+     * 
+     * @param {*} data 
+     * @param {Number} x size of the data to be generated
+     * @returns {Array<data>} an array holding x number of data
+     */
+    static generateDataXTimes = (data /** Any */, x /** Number */= 1) => {
+        let res /**Array<Typeof(data)> */= [];
+        for(let i /** Number */ = 0; i < x; i++){
+            res.push(data);
+        }
+        return res;
+    }
 }
 
 module.exports = {Utils}

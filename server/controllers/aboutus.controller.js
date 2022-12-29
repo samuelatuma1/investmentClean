@@ -18,7 +18,6 @@ class AboutController{
      *  @desc Allows only admin add aboutus
      *  @protected (userId in req.userId | admin access required)
      *  @param {{body: AboutUsDTO}} req,
-     *  @param {{status: Stats}} res, 
      * @returns {Response<Stats>} 
      */
      createAboutUs = async ( req /**Request */, res /**Response */) /**ResponseEntity<Stats> */ => {

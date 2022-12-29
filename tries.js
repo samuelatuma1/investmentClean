@@ -106,3 +106,13 @@ function addDays(date, days) {
 
 const x = new Date()
 console.log({x: x, sevenDaysLater: addDays(x, 7).getTime()})
+
+function generateX(data /** Any */, x /** Number */= 1){
+    let res /**Array<any> */= [];
+    for(let i /** Number */ = 0; i < x; i++){
+        res.push(data);
+    }
+    return res;
+}
+
+console.log(generateX({name: "sam", age: 6}, 10))
