@@ -68,7 +68,8 @@ class AboutUsService extends IAboutUsService{
      * @returns {Promise<AboutUs>}
      */
     getAboutUs = async () => {
-        return await AboutUs.findOne();
+        let aboutUs /** AboutUs*/ =   Utils.convertModelToObject(await AboutUs.findOne());
+        return aboutUs;
     }
 
     /**

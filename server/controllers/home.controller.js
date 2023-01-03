@@ -595,6 +595,29 @@ class HomeController {
         }
     }
 
+    /**
+      * @method GET /aboutusfull
+      * @PROTECTED Accessible to all users
+      * @returns {{aboutus: AboutUsDTO}}
+      */
+    getAboutUsFull =  async (req /**Request */, res /**Response */)/**ResponseEntity<> */ => {
+        try{
+            let aboutUs /** AboutUs */ = await this.aboutUsService.getAboutUs();
+            aboutUs.imgUrl = "";
+            if(aboutUs !== null){
+                const aboutusId /**ObjectId*/ = aboutUs._id;
+                const aboutUsImage = await this.aboutUsService.getAboutUsImage(req, aboutusId);
+                if (aboutUsImage !== null){
+                    aboutUs.imgUrl = aboutUsImage.imgUrl;
+                }
+            }
+            return res.status(200).json({aboutUs})
+
+        }
+        catch(ex /** Message */){
+            return res.status(400).json({error: ex.message});
+        }
+    }
 
 
     /**
@@ -644,6 +667,25 @@ class HomeController {
             return res.status(400).json({error: ex.message});
         }
      }
+
+      /**
+      * @method GET /ourservices/:ourserviceid
+      * @PROTECTED Accessible to all users
+      * @returns {Promise<{ourService: OurService}>}
+      */
+       getOurService = async (req/**Request */, res /**Response */) /**ResponseEntity<AboutUs> */ => {
+        try{
+            const _id /** ObjectId */ = req.params.ourserviceid;
+            const ourService /** Array<OurServicesAndImages>*/ = await this.ourServices.getOurService(req, _id);
+
+            return res.status(200).json({ourService});
+        }
+        catch( ex /**Exception */){
+            // console.log(ex);
+            return res.status(400).json({error: ex.message});
+        }
+     }
+
 
 
      /**

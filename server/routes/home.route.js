@@ -86,6 +86,7 @@ homeRoute.route("/ourservices")
         .post(ValidateToken.validateToken, home.createOurServices)
 
 homeRoute.route("/ourservices/:ourserviceid")
+        .get(home.getOurService)
         .patch(ValidateToken.validateToken, home.updateOurServices)
 
 homeRoute.route("/ourservicesimage")
@@ -94,5 +95,8 @@ homeRoute.route("/ourservicesimage")
                 uploadImageHandler.uploadImg().single("img"),
                 home.addOurServicesImage
         )
+
+homeRoute.route("/aboutusfull")
+        .get(home.getAboutUsFull);
 module.exports = {homeRoute};
 

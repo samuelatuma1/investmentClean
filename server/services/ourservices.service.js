@@ -71,6 +71,14 @@ class IOurServicesService{
      */
      updateOurService = async (id /** ObjectId */, ourServiceDTO /** OurServiceDTO */) => {}
 
+
+      /**
+     * @param {Request} req 
+     * @param {ObjectId} _id 
+     * @returns {Promise<OurServices>}
+     */
+    getOurService = async (req, _id /** ObjectId */) /** OurServices */=> {}
+
 }
 
 class OurServicesService extends IOurServicesService{
@@ -190,7 +198,6 @@ class OurServicesService extends IOurServicesService{
     addOurServicesImage = async (ourServicesImageDTO /**AboutUsImageDTO */, req /** Request */) /**Promise<AboutUsImage> */=> {
         try{
             const ourServices /**OurServices*/= await OurServices.findOne({_id: ourServicesImageDTO.ourServicesId})
-            console.log({ourServicesImageDTO })
             // console.log({aboutUs})
             if(ourServices !== null){
                 await this.#deleteAllOurServicesImagesWithoutService();
@@ -221,6 +228,36 @@ class OurServicesService extends IOurServicesService{
     /**
      * 
      * @param {Request} req 
+     * @param {ObjectId} _id 
+     * @returns {Promise<OurServices>}
+     */
+    getOurService = async (req, _id /** ObjectId */) /** OurServices */=> {
+        try{
+            let ourService /**OurServices*/= await OurServices.findOne({_id});
+            if(ourService !== null){
+                ourService = Utils.convertModelToObject(ourService);
+
+                let image /**OurServicesImage*/ = await this.getOurServicesImage(req, ourService._id);
+                if(!image){
+                    image = {
+                        
+                        ourServicesId: ourService._id,
+                        imageUrl: null
+                    }
+                }
+                ourService.imgUrl = image.imgUrl; 
+                ourService.image = image;
+            }
+            return ourService;
+        } catch(ex /** Exception */){
+            // console.log(ex)
+            return null;
+        }
+    }
+
+    /**
+     * 
+     * @param {Request} req 
      * @returns {Array<OurServicesAndImages>}
      */
     getAllOurServicesAndImages = async (req /** Request */) /** Array<OurServicesAndImages> */=> {
@@ -237,8 +274,6 @@ class OurServicesService extends IOurServicesService{
                     ourServicesId: ourService._id,
                     imageUrl: null
                 }
-
-               
             }
             
             ourService.image = image

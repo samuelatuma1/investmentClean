@@ -16,6 +16,7 @@ function getMult({data /*: string */, repeat /*: number */}){
     }
 }
 
+const exp = require("constants");
 // getMult({data: "samuel", repeat: 10})
 
 const events = require("events");
@@ -115,4 +116,22 @@ function generateX(data /** Any */, x /** Number */= 1){
     return res;
 }
 
-console.log(generateX({name: "sam", age: 6}, 10))
+/**
+ * 
+ * @param {String} words 
+ * @param {Number} x 
+ * @returns {String}
+ */
+function showXWords(words /** String */, x /** Number */ = 20) /** String */{
+    // Split words  
+    const splitWords /** Array<String> */ = words.split(" ");
+
+    const expectedWordCount /**Array<String> */ = splitWords.slice(0, x);
+    // join the first x words back
+    
+    return expectedWordCount.join(" ");
+}
+
+let words = "a noun is a name of a person, animal, place or thing. I hope you get it now?";
+
+console.log({words: showXWords(words, 17)});
