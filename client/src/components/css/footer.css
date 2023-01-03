@@ -1,12 +1,14 @@
 :root{
     --bg-screen-footer-min-height: 300px;
-    --footer-bg-color: rgb(250, 250, 250);
+    /* --footer-bg-color: rgb(250, 250, 250); */
+    --footer-bg-color: black;
+
 }
 .footerDiv{
     padding: 20px 10px;
     top: 0px;
     left: 0px;
-    
+    color: grey;
     background-color: var(--footer-bg-color);
 }
 

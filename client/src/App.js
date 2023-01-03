@@ -25,6 +25,10 @@ import AdminHomePage from "./pages/admin/admin.js";
 // Not Found
 import { NotFoundPage } from './pages/NotFoundPage';
 
+// About Us
+import { AboutUs } from './pages/home/aboutus';
+// Our Service
+import { OurService } from './pages/home/ourservice';
 // Home Page
 import { HomePage } from './pages/home/home.js';
 function App() {
@@ -42,6 +46,8 @@ function App() {
 
             <Route path="/acct/home" element={< UserAccountHomePage/>} />
             <Route path="/admin" element={<AdminHomePage />} />
+            <Route path="/aboutus" element={<AboutUs />} />
+            <Route path="/ourservice/:_id" element={<OurService />} />
             <Route path="*" element={<NotFoundPage/>} />
           </Routes>
           

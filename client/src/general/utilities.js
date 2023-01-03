@@ -40,7 +40,7 @@ class Utilities {
      * 
      * @param {*} data 
      * @param {Number} x size of the data to be generated
-     * @returns {Array<data>} an array holding x number of data
+     * @returns {Array<any>} an array holding x number of data
      */
      static generateDataXTimes = (data /** Any */, x /** Number */= 1) => {
         let res /**Array<Typeof(data)> */= [];
@@ -48,6 +48,20 @@ class Utilities {
             res.push(data);
         }
         return res;
+    }
+
+    /**
+     * @desc Shows X
+     * @param {String} words 
+     * @param {Number} x 
+     * @returns {String}
+     */
+    static showXWords = (words /** String */, x /** Number */ = 20) /** String */ => {
+        const splitWords /** Array<String> */ = words.split(" ");
+    
+        const expectedWordCount /**Array<String> */ = splitWords.slice(0, x);
+        
+        return expectedWordCount.join(" ");
     }
 }
 

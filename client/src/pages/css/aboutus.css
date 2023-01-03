@@ -1,0 +1,21 @@
+.abousUsDiv{
+    display: flex;
+    justify-content: center;
+}
+
+.aboutUsSection{
+    max-width: 600px;
+    padding: 10px;
+}
+
+.aboutUsSection img{
+    display: block;
+    max-width: 100%;
+    object-fit: cover;
+    margin: 15px 0px;
+}
+
+.aboutUsSection h1{
+    font-weight: bolder;
+    margin: 10px 0px;
+}

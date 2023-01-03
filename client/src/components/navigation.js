@@ -101,8 +101,8 @@ export default function NavigationBar(props){
             <ul className="toggleDisplay hide" ref={toggleNavRef}>
             <section className='mainNav'>
                 <li>
-                    <Link to="/" className="navAnchor home">
-                        Home
+                    <Link to="/aboutus" className="navAnchor aboutus">
+                        About Us
                     </Link>
                 </li>
                 <li >

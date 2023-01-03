@@ -14,15 +14,18 @@ import {HiCurrencyDollar} from "react-icons/hi";
 
 // Icons
 import {FaArrowUp} from "react-icons/fa";
-import {GrNext, GrLineChart} from "react-icons/gr"
-import {TiChartLine} from "react-icons/ti";
+import { GrLineChart} from "react-icons/gr"
+import {BiDotsHorizontalRounded} from "react-icons/bi";
 import {BsFillCalendar2CheckFill} from "react-icons/bs";
-import {AiFillStar} from "react-icons/ai";
+import {AiFillStar, AiOutlineArrowRight} from "react-icons/ai";
 // Navigation
 import {Link} from "react-router-dom";
 
 // Footer
 import { Footer } from "../../components/footer";
+
+// Utilities
+import { Utilities } from "../../general/utilities";
 
 // icons
 import {FaUserAlt, FaChevronCircleRight} from "react-icons/fa";
@@ -93,11 +96,11 @@ const HomePageIntro = (props /** {[key: string]: any} */) /**Component */ => {
         <div className="homePageIntroDiv" style={homePageBgImg}>
             {
                 loading ? <Loading /> : 
-                <section>
+                <section  >
                     <div className="introTextDiv">
                         <h1>{intro?.heading}</h1>
 
-                        <main>
+                        <main >
                             
                             <p>
                             {intro?.body}
@@ -265,7 +268,6 @@ const HowToEarn /** Component */ = (props /** {[key: String]: any} */) => {
                             <></>
                         }
                     </div>
-
                     <main className="howToEarnMain">
                         <header>
                             <h2 style={{textAlign: "center"}}>
@@ -304,7 +306,9 @@ const OurServices /** Component */= () /** JSX.Element */ => {
         getOurServices();
     }, [])
     async function getOurServices(){
+        
         const ourServicesRequest /**Response*/ = await fetch("/home/ourservices");
+        
         if(ourServicesRequest.ok){
             const ourServicesResponse /**Array<OurServiceDTO> */ = (await ourServicesRequest.json()).ourServices;
             setOurServices(ourServicesResponse);
@@ -325,9 +329,22 @@ const OurServices /** Component */= () /** JSX.Element */ => {
                                     <section key={idx} className="homeOurServiceSection">
                                         <div>
                                             <h3>{service?.title}</h3>
-                                            <p>{service?.body}</p>
+                                            <p>
+                                                {Utilities.showXWords(service?.body, 25)} 
+                                                
+                                                <Link to={`/ourservice/${service?._id}`} style={{textDecoration: "none"}}>
+                                                    <span style={{display: 'inline-flex', 
+                                                    alignItems: 'center',
+                                                    color: "#f5a623",
+                                                    
+                                                    fontWeight: "bold"
+                                                    }}>
+                                                         . . .Read More <AiOutlineArrowRight />
+                                                    </span>
+                                                </Link>
+                                            </p>
                                         </div>
-                                        <div>
+                                        <div className="ourServiceImgDiv">
                                             {
                                                 service?.image?.imgUrl ?
                                                 <img crossOrigin="anonymous"
@@ -350,7 +367,7 @@ const OurServices /** Component */= () /** JSX.Element */ => {
 }
 
 
-const Investments /**Component */ = (props /** {[key: String]: any} */)/** JSX */ => {
+const Investments /**Component */ = (props /** {[key: String]: any} */)/** JSX.Element */ => {
     // States
     const [loading /**boolean */, setLoading /**Funct<T, T> */] = useState(false);
     const [investments /**Array<Investment> */, setInvestments /**Funct<T, T> */] = useState([]);
