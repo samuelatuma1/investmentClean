@@ -97,6 +97,25 @@ class InvestmentController {
         }
     }
 
+    
+
+    /** 
+    * @method Get /retrieve
+    * @protected (userId in req.userId)
+    * @payload {
+    * }
+    * @params {}, @query {}
+    * @returns {List<Investment>}
+   */
+     retrieveInvestmentsWithoutDefault = async (req /*:Request */, res /*: Response */) => {
+        try{
+            let investments /**: List<Investment> */ = await this.investmentService
+                        .retrieveInvestmentsWithoutDefault();
+            return res.status(200).json(investments);
+        } catch (err /*: Exception */){
+            return res.status(500).json({error: err.message});
+        }
+    }
     /** 
      * @method Post /update/:investmentId
      * @requires Admin Access

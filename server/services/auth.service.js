@@ -73,6 +73,13 @@ class IAuthService {
      * @returns {Promise<{passWordChanged: boolean}>}
      */
     changePassword = async (_id /** ObjectId */, oldPassword /** String */, newPassword /** String */) /**{passWordChanged: boolean} */=> {}
+
+
+     /**
+     * @param {String} emailOrName email or name of user to search
+     * @returns {Array<User>} users with matching name or email
+     */
+      searchUsersByEmailOrName = async (emailOrName /** String */) /** Array<User> */ => {}
 }
 
 
@@ -327,6 +334,23 @@ class AuthService{
         // else
         return {passwordChanged}; 
     }
+
+
+    /**
+     * @param {String} emailOrName email or name of user to search
+     * @returns {Array<User>} users with matching name or email
+     */
+    searchUsersByEmailOrName = async (emailOrName /** String */) /** Array<User> */ => {
+        const users /** Array<User> */ = (await User.find({$or : [
+            {fullName: new RegExp(`^${emailOrName}`, 'i')},
+            {email: new RegExp(`^${emailOrName}`, 'i')}
+        ]})).map(user => {
+            const {fullName, email, _id} = user;
+            return {fullName, email, _id}
+        })
+        
+        return users
+    } 
 }
 
 module.exports = {AuthService, IAuthService}

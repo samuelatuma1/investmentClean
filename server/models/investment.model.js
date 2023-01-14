@@ -9,7 +9,7 @@ const InvestmentSchema = new mongoose.Schema({
     yieldValue: {
         type: Number,
         required: true,
-        min: 1
+        min: 0.00001
     },
     waitPeriod: {
         type: Number,

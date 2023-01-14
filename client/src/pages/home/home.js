@@ -258,7 +258,11 @@ const HowToEarn /** Component */ = (props /** {[key: String]: any} */) => {
             loading ?
             <Loading /> :
             <div className="howToEarnDiv">
-                
+                <header>
+                    <h2 style={{textAlign: "center"}}>
+                        {howToEarn?.howToEarn?.desc}
+                    </h2>
+                </header>
 
                 <section className="howToEarnSection">
                     <div className="howToEarnImage">
@@ -269,11 +273,7 @@ const HowToEarn /** Component */ = (props /** {[key: String]: any} */) => {
                         }
                     </div>
                     <main className="howToEarnMain">
-                        <header>
-                            <h2 style={{textAlign: "center"}}>
-                                {howToEarn?.howToEarn?.desc}
-                            </h2>
-                        </header>
+                        
                         {howToEarn?.howToEarn?.steps.map(({title, details}, id) => (
                             <div key={id}>
                                 <h4><FaChevronCircleRight />{title}</h4>
@@ -330,8 +330,7 @@ const OurServices /** Component */= () /** JSX.Element */ => {
                                         <div>
                                             <h3>{service?.title}</h3>
                                             <p>
-                                                {Utilities.showXWords(service?.body, 25)} 
-                                                
+                                                <div  dangerouslySetInnerHTML={{__html: Utilities.showXWords(service?.body || "", 25)}} />
                                                 <Link to={`/ourservice/${service?._id}`} style={{textDecoration: "none"}}>
                                                     <span style={{display: 'inline-flex', 
                                                     alignItems: 'center',
@@ -382,7 +381,10 @@ const Investments /**Component */ = (props /** {[key: String]: any} */)/** JSX.E
 
         setLoading(false);
         if(req.ok){
-           const investments /**Array<Investment> */ = await req.json();
+           let investments /**Array<Investment> */ = await req.json();
+
+           
+
            if(investments){
             setInvestments(investments);
            }
@@ -442,12 +444,8 @@ const Investments /**Component */ = (props /** {[key: String]: any} */)/** JSX.E
                                 <section className="investmentSectionBtn">
                                     <a href="./acct/home">
                                         <button>
-                                            
                                                 Start Earning
                                                 <GrLineChart />
-                                                {/* <TiChartLine /> */}
-    
-                                            
                                         </button>
                                     </a>
                                 </section>

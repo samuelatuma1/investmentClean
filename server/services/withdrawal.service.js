@@ -1,7 +1,7 @@
 const {Withdrawal} = require("../models/withdrawal.model.js");
 
 
-/*
+/** 
     Withdrawal => {
         acctId: ObjectId,
         userId: ObjectId,
@@ -16,11 +16,12 @@ class IWithdrawalService {
      * @desc Creates a withdrawal if account has the available amount to fund it.
      * sets withdrawal status to pending;
      * @param {{
-        acctId: ObjectId,
-        userId: ObjectId,
-        amount: number,
-        currency: string
-    * }} withdrawal 
+     *   acctId: ObjectId,
+     *    userId: ObjectId,
+     *    amount: number,
+     *    currency: string
+     * }} withdrawal 
+     * @param {Number} withdrawableBal
      * @param {Array<Transaction>} withdrawableTransactions
      * @returns {Promise<Withdrawal>}
      */
@@ -149,9 +150,8 @@ class WithdrawalService {
             } = withdrawal;
 
         const pendingOrApprovedWithdrawals /** Array<Withdrawal>*/ = await 
-                    this.#retrievePendingAndApprovedWithdrawalsForCurrency(acctId, currency);
+                this.#retrievePendingAndApprovedWithdrawalsForCurrency(acctId, currency);
 
-        
         // get available withdrawable balance for currency
         const amtWithdrawable /**number */ = this.#calculateWithdrawableBalanceForCurrency(pendingOrApprovedWithdrawals, 
             withdrawableTransactions, currency);
@@ -168,11 +168,9 @@ class WithdrawalService {
             // console.log("err =>", err);
             return null;
         }
-        
-    };
+    }
 
     /**
-     * 
      * @param {Array<Transaction>} transactions 
      * @returns {{[key: String]: Array<Transaction>}}
      */
@@ -201,9 +199,9 @@ class WithdrawalService {
      * @param {ObjectId} acctId 
      * @param {Array<Transaction>} currencyTransactions 
      * @returns {Promise<{
-            availableWithdrawableBalance: number,
-            pendingWithdrawableBalance: number
-        }>}
+     *      availableWithdrawableBalance: number,
+     *       pendingWithdrawableBalance: number
+     *  }>}
      */
     #currencyWithdrawableDetails = async ( currency /**String */, acctId /**ObjectId */,
     currencyTransactions /**: Array<Transaction> */) => {
@@ -229,7 +227,6 @@ class WithdrawalService {
     }
 
     /**
-     * 
      * @param {Array<Transaction>} withdrawableTransactions 
      * @param {ObjectId} acctId 
      * @returns {Promise<{
@@ -257,15 +254,13 @@ class WithdrawalService {
     }
 
     /**
-    
-     * @returns {Promise<Array<Withdrawal>>}all withdrawals 
+     * @returns {Promise<Array<Withdrawal>>} all withdrawals 
      */
     getAllWithdrawals = async () /**Promise<Array<Withdrawal>>*/ => {
         return await Withdrawal.where().populate("acctId").populate("userId");
     }
 
     /**
-     * 
      * @param {ObjectId} withdrawalId 
      * @param {{[Key: String]: String}} updatedDTO 
      * @returns {Promise} 

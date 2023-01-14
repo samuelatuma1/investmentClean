@@ -4,6 +4,15 @@ const { ITransactionService } = require("../services/transaction.service.js");
 const { IAccountService } = require("../services/account.service.js");
 const { Utils } = require("../utils/utils.utils.js");
 
+const TransactionSummaryDTO = {
+    totalDeposits: Number, 
+    totalEarnings: Number, 
+    totalProfitFromInvestments: Number,
+    transactionCurrency: String, 
+    avgROI: Number,
+    availableWithdrawableBalance: Number,
+    pendingWithdrawableBalance: Number
+}
 
 // [ApiController]
 //[Route("/withdrawal")]
@@ -113,6 +122,7 @@ class WithdrawalController{
             const acctId /**ObjectId */ = userAcct._id;
             const {withdrawableTransactions  /**TransactionModel[] */} = await this.transactionService
                         .retrieveWithdrawableTransactions(acctId);
+            
             const getAllWithdrawableAndPendingBalance /**
                 {
                 [key: string]: {
@@ -130,34 +140,12 @@ class WithdrawalController{
         }
     }
 
-
-    /** 
-     * @method GET /getacctsummary
-     * @protected (userId in req.userId)
-     * @payload {}
-     * @params {}, @query {}
-     * @returns {Promise<{
-            [key: string]: {
-                totalDeposits?: Number, 
-                totalEarnings?: Number, 
-                totalProfitFromInvestments?: Number,
-                transactionCurrency?: String, 
-                avgROI?: Number,
-                availableWithdrawableBalance?: number,
-                pendingWithdrawableBalance?: number
-            }>}
-    */
-    getAccountSummary = async (req /**Request*/, res /**Response */) => {
-        try{
-            // get all valid successful transactions
-            const userId /*: ObjectId */ = req.userId;
-            const userAcct /*: AccountModel */ = await this.accountService.retrieveAccount(userId);
-
-            if(userAcct == null){
-                return res.status(403).json({error: "No user account for user"})
-            }
-
-            const acctId /**ObjectId */ = userAcct._id;
+    /**
+     
+     * @param {ObjectId} acctId 
+     * @returns {Promise<TransactionSummaryDTO>} 
+     */
+    #getAcctSummary = async (acctId /** ObjectId */) /** TransactionSummaryDTO*/ => {
 
             const {withdrawableTransactions  /**TransactionModel[] */} = await this.transactionService
                         .retrieveWithdrawableTransactions(acctId);
@@ -177,6 +165,38 @@ class WithdrawalController{
             
             // merge withdrawals and user Transactions summary
             const summary = Utils.mergeObjects(getUserTransactionsSummary, getAllWithdrawableAndPendingBalance);
+            return summary;
+    }
+
+    /** 
+     * @method GET /getacctsummary
+     * @protected (userId in req.userId)
+     * @payload {}
+     * @params {}, @query {}
+     * @returns {{summary: Promise<{
+            [key: string]: {
+                totalDeposits?: Number, 
+                totalEarnings?: Number, 
+                totalProfitFromInvestments?: Number,
+                transactionCurrency?: String, 
+                avgROI?: Number,
+                availableWithdrawableBalance?: number,
+                pendingWithdrawableBalance?: number
+            }}>}
+    */
+    getAccountSummary = async (req /**Request*/, res /**Response */) => {
+        try{
+            // get all valid successful transactions
+            const userId /*: ObjectId */ = req.userId;
+            const userAcct /*: AccountModel */ = await this.accountService.retrieveAccount(userId);
+
+            if(userAcct == null){
+                return res.status(403).json({error: "No user account for user"})
+            }
+
+            const acctId /**ObjectId */ = userAcct._id;
+
+            const summary = await this.#getAcctSummary(acctId);
             
             return res.status(200).json({summary});
         } catch(err /**Error */){
@@ -210,7 +230,6 @@ class WithdrawalController{
             return res.status(500).json({error: err.message})
         }
     }
-
 
     /** 
      * @method PUT /updatewithdrawal/:withdrawalId
@@ -261,11 +280,51 @@ class WithdrawalController{
             // console.log(err);
             return res.status(500).json({error: err.message});
         }
-
-       
      }
 
-    
+     /** 
+     * @method POST /searchusers
+     * @desc Allows only admin search users
+     * @protected (userId in req.userId | admin access required)
+     * @param {{body: {
+     *  emailOrName: String
+     * }}} req
+     * @params {}, @query {}
+     * @returns {{users: Array<User>} }
+    */
+     searchUsersByEmailOrName = async(req /** Request */, res /** Response */) => {
+        try{
+            // Ensure user is admin
+            const userId /**ObjectId */ = req.userId;
+            const isAdmin /*boolean*/ = await this.authService.verifyIsAdminFromId(userId);
+            if(!isAdmin)
+                return res.status(403).json({message: "You are not permitted to access users"});
+
+            const {emailOrName /** String */} = req.body;
+
+            if(!emailOrName)
+                return res.status(400).json({message: "Please include emailOrName field"});
+
+            const users /** Array<User> */= await this.authService.searchUsersByEmailOrName(emailOrName);
+
+            const usersWithSummary /** Array<User> */ = [];
+            for(let user of users){
+                const userAcct /*: AccountModel */ = await this.accountService.retrieveAccount(user._id);
+                console.log({userAcct})
+               const acctId /**ObjectId */ = userAcct._id;
+               const summary = await this.#getAcctSummary(acctId);
+               
+               user.summary = summary;
+               usersWithSummary.push(user);
+            }
+            return res.status(200).json({users: usersWithSummary});
+        }
+        catch(err /**Error */ ){
+            // console.log(err);
+            return res.status(500).json({error: err.message});
+        }
+     }
+
 }
 
 

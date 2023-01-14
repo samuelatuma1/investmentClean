@@ -34,5 +34,7 @@ transactionRoute.route("/update/:transactionId")
 
 transactionRoute.route("/filtertransactions")
         .get(ValidateToken.validateToken, transaction.retrieveTransactions);
-        
+
+transactionRoute.route("/adminaddtransaction")
+        .post(ValidateToken.validateToken, transaction.adminAddTransaction);
 module.exports = {transactionRoute};

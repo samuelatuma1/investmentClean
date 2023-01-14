@@ -1,6 +1,8 @@
 const {validationResult} = require("express-validator");
 const {IInvestmentService} = require("../services/investment.service");
 const {IMailService } = require("../services/mail.service");
+const {IAccountService} = require("../services/account.service");
+const {ITransactionService} = require("../services/transaction.service");
 
 // Route /transaction
 class TransactionController{
@@ -11,9 +13,8 @@ class TransactionController{
     /*private readonly */ mailService
 
     /**
-     * 
-     * @param {*} accountService 
-     * @param {*} transactionService 
+     * @param {IAccountService} accountService 
+     * @param {ITransactionService} transactionService 
      * @param {IInvestmentService} investmentService 
      * @param {IMailService} mailService
      */
@@ -73,12 +74,71 @@ class TransactionController{
                 return res.status(201).json(newTransaction);
             }
             return res.status(403).json({error: "Transaction Error: No Account for user"});
-        } catch(err) {
+        } 
+        catch(err) {
             // console.log(err)
             return res.status(500).json({error: err.message})
         }
     }
+    /**
+     *  @method POST /adminaddtransaction
+     *  @desc Allows only add transaction
+     *  @protected (userId in req.userId | admin access required)
+     * 
+     *  @param {
+     * body {
+     *   amount: Number,
+     *   userId: String,
+     *   currency: Number
+     * }} req,
+    *  @param {{status: Stats}} res, 
+    * @returns {Response<>}
+    */
+    adminAddTransaction = async (req/*: Request */, res /*:Response */) => {
+        try{
 
+             // Ensure user is admin
+           const adminId /**ObjectId */ = req.userId;
+           const isAdmin /*boolean*/ = await this.authService.verifyIsAdminFromId(adminId);
+           // console.log({isAdmin});
+           if(!isAdmin)
+               return res.status(403).json({message: "You are not permitted to upload "});
+
+            let {amount, userId, currency} = req.body /*: Object<string, object> */;
+            const defaultInvestment /** Investment */ = await this.investmentService.getOrCreateDefaultInvestment(currency);
+
+            const userAcct /*: AccountModel */ = await this.accountService.retrieveAccount(userId);
+            const transactionObject /** Transaction */ = {
+                amount,
+                status: "approved",
+                currency,
+                investmentId: defaultInvestment._id
+            }
+            if(userAcct !== null){
+                const acctId /*:ObjectId */ = userAcct._id;
+                
+                // Get investmentId and verify it exists
+                const investment /*InvestmentModel?*/ = await this.investmentService.retrieveInvestment(defaultInvestment._id);
+            
+                if (investment === null){
+                    return res.status(403).json({error: "InvestmentId does not exist"});
+                }
+
+                // Get currency
+                const currency /**: string */ = investment.currency;
+                transactionObject.currency = currency;
+                // add amount to transactionoBJECT
+                const newTransaction /*: TransactionModel */ = await this.transactionService
+                                .createTransaction(acctId, transactionObject);
+                return res.status(201).json(newTransaction);
+             }
+        }
+        catch(err) {
+                // console.log(err)
+                return res.status(500).json({error: err.message})
+            }
+
+    }
     /** 
      * @method get /gettransactions
      * @protected (userId in req.userId)
@@ -88,6 +148,7 @@ class TransactionController{
     */
     getUserTransactions = async (req /*:Request */, res /*: Response */) => {
         try{
+            
             const userId /*: ObjectId */= req.userId
             const userAcct /*: AccountModel */ = await this.accountService.retrieveAccount(userId);
             

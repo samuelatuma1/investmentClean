@@ -45,6 +45,20 @@ class IInvestmentService{
       softDeleteInvestment = async (_id /**: Objectid */) /*: boolean */=> {
         throw new Error("deleteInvestment not implemented")
       }
+
+
+    /**
+     * @param {String} desc 
+     * @returns {Investment}
+     */
+    findInvestmentByDesc = async (desc /** String */) => {}
+
+     /**
+     * @desc creates an investment with desc default_currencyName if it doesn't find one. returns investment
+     * @param {String} currency 
+     * @returns {Promise<Investment>}
+     */
+      getOrCreateDefaultInvestment = async ( currency /** String */ = "dollars") /** Investment */ => {}
 }
 
 
@@ -83,6 +97,14 @@ class InvestmentService extends IInvestmentService{
         return await Investment.where({deleted: { $ne: true}});
     }
 
+    retrieveInvestmentsWithoutDefault = async () /**: List<Investment> */ => {
+        const defaultConstant = "default_";
+        const investments = await Investment
+            .where({deleted: { $ne: true}});
+        return  investments
+                .filter(investment => !(investment.desc.includes(defaultConstant)));
+    }
+
     updateInvestment = async (_id /**: Objectid */, updateData /**: Investment */) /*: boolean */=> {
         // Get item with Id
         const investmentInDb /**: Investment */ = await Investment.findById(_id);
@@ -91,6 +113,15 @@ class InvestmentService extends IInvestmentService{
             return true;
         }
         return false;
+    }
+
+    /**
+     * 
+     * @param {String} desc 
+     * @returns {Promise<Investment>}
+     */
+    findInvestmentByDesc = async (desc /** String */) => {
+        return await Investment.findOne({desc})
     }
 
     /**
@@ -106,6 +137,26 @@ class InvestmentService extends IInvestmentService{
             return true;
         }
         return false;
+    }
+
+    /**
+     * @desc creates an investment with desc default_currencyName if it doesn't find one. returns investment
+     * @param {String} currency 
+     * @returns {Promise<Investment>}
+     */
+    getOrCreateDefaultInvestment = async ( currency /** String */ = "dollars") /** Investment */ => {
+        const desc /** String */ =  `default_${currency}`;
+        let defaultCurrency /** Investment */=  await this.findInvestmentByDesc(desc);
+        console.log({defaultCurrency})
+        if(defaultCurrency === null){
+            const amount = 1;
+            const yieldValue = 0.00001;
+            const waitPeriod = 0;
+
+            const investment = new Investment({amount, yieldValue, waitPeriod, currency, desc});
+            defaultCurrency = await investment.save();
+        }
+        return defaultCurrency;
     }
 }
 

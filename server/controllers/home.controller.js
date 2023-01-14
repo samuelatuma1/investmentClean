@@ -243,7 +243,8 @@ class HomeController {
       */
      getInvestments = async (req /**Request */, res /**Response */) /**Response<> */ => {
         try{
-            const investments /**Array<Investment>*/ = await this.investmentService.retrieveInvestments();
+            const investments /**Array<Investment>*/ =await this.investmentService
+            .retrieveInvestmentsWithoutDefault();
             return res.status(200).json(investments);
         } catch( ex /**Exception */){ 
             return res.status(400).json({error: ex.message});

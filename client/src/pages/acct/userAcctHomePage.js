@@ -777,6 +777,7 @@ const RequestWithdrawal = (props) => {
         if(withdrawableAndPendingBalReq.ok){
             setLoading(currLoadingState => false);
             const res /**Response */ = await withdrawableAndPendingBalReq.json();
+            console.log({res})
             setWithdrawableAndPendingBalance(prevBalances => 
                 res.withdrawableAndPendingBalance);
 

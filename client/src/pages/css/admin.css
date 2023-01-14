@@ -204,3 +204,47 @@ div.ourService{
     background-color: white;
     padding: 10px;
 }
+
+/** FindUser */
+.userMain{
+    background-color: white;
+    padding: 10px;
+    margin: 30px 0px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px grey;
+
+}
+.currencySection{
+    margin: 10px;
+    background-color: rgb(221, 221, 221);
+    padding: 10px;
+    box-shadow: 0px 0px 10px 0px grey;
+}
+.currencyDetails{
+    background-color: white;
+    margin: 10px 0px;
+    padding: 10px;
+
+    border-radius: 10px;
+
+}
+
+.adminAddTransaction{
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 4px;
+    min-height: 24px;
+    background-color: #FCD535;
+    width: 100%;
+    font-weight: bolder;
+    color: rgb(55, 55, 0);
+}
+
+.adminaddtransactionForm{
+    padding: 5px;
+    margin: 5px;
+    box-shadow: 0px 0px 3px 0px rgb(205, 205, 205);
+    border-radius: 5px;
+}

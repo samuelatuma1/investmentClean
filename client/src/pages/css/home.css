@@ -228,6 +228,11 @@ body{
 .howToEarnSection{
     display: grid;
 }
+.howToEarnImage {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
 .howToEarnImage img{
     display: block;
     object-fit: cover;

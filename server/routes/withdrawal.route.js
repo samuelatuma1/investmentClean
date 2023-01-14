@@ -40,6 +40,7 @@ withdrawalRoute.route('/getwithdrawals')
 withdrawalRoute.route('/updatewithdrawal/:withdrawalId')
     .put(ValidateToken.validateToken, withdrawalController.updateWithdrawal);
 
-
+withdrawalRoute.route("/searchusers")
+    .post(ValidateToken.validateToken, withdrawalController.searchUsersByEmailOrName)
 module.exports = {withdrawalRoute};
 

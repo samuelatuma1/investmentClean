@@ -103,7 +103,7 @@ class TransactionService /*: implements ITransactionService */ {
      */
     #transactionCurrentValue = (daysPassedSinceTransaction /**number */,  waitPeriod 
     /**number */) /**number */ => 
-            (daysPassedSinceTransaction / waitPeriod) >= 1 ?
+            (daysPassedSinceTransaction / waitPeriod || 1) >= 1 ?
                 1: (daysPassedSinceTransaction / waitPeriod);
     
     
@@ -124,6 +124,8 @@ class TransactionService /*: implements ITransactionService */ {
             throw new Error(err.message);
         }
     }
+
+    
 
     /**
      * 
@@ -267,11 +269,12 @@ class TransactionService /*: implements ITransactionService */ {
             const transactionObject /**TransactionModel */ = transaction.toObject();
             const timeDelta /** number */ = new Date().getTime()
                                             - new Date(transactionObject.createdAt).getTime();
+            
             const daysPassedSinceTransaction /**number */= Math.floor(timeDelta / day);
             transactionObject.days = daysPassedSinceTransaction;
             const waitPeriod = transactionObject.investmentId.waitPeriod;
             // console.log({waitPeriod, daysPassedSinceTransaction, transaction})
-
+            
             if(daysPassedSinceTransaction >= waitPeriod){
                 const percent /**number */ = 0.01 * transactionObject.investmentId.yieldValue;
                 const daysFraction /**number */ = this.#transactionCurrentValue(
@@ -279,7 +282,8 @@ class TransactionService /*: implements ITransactionService */ {
                 const yieldOverTime /**number */ = daysFraction * (percent);
                 const currentValue /**number */ = transactionObject.amount * (1 + yieldOverTime);
                 transactionObject.currentValue =  +currentValue.toFixed(2);
-
+                
+                
                 // add transaction currValue to withdrawableTransactions
                 withdrawableTransactionsAmount += transactionObject.currentValue;
                 acctTransactions.push(transactionObject);

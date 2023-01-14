@@ -25,7 +25,7 @@ investmentRoute.route("/retrieve/:investmentId")
     .get(ValidateToken.validateToken, investment.retrieveInvestment)
 
 investmentRoute.route("/retrieve")
-    .get(ValidateToken.validateToken, investment.retrieveInvestments)
+    .get(ValidateToken.validateToken, investment.retrieveInvestmentsWithoutDefault)
 
 investmentRoute.route("/update/:investmentId")
     .post(ValidateToken.validateToken, investmentUpdateValidator, investment.updateInvestment);

@@ -2559,9 +2559,208 @@ const HomePageOurServices /** Component */ = (props /**{user: User} */) /**JSX *
     </>
     )
 }
+const UserDTO = {
+    "fullName": String,
+    "email": String,
+    "_id": String,
+    "summary": {
+      String: /**Array<*/{
+        "totalDeposits": Number,
+        "totalEarnings": Number,
+        "totalProfitFromInvestments": Number,
+        "transactionCurrency": Number,
+        "avgROI": Number,
+        "availableWithdrawableBalance": Number,
+        "pendingWithdrawableBalance": Number
+      } /** > */,
+    }
+}
+const FindAndUpdateUser /** Component */= ({user} /**: {User} */) /** JSX.Element */=> {
+    // Props data
+    const User /*: UserModel */= user || {};
+    const token  /* String */= "Bearer " + User.token || "";
+    const toggleRef = useRef(null);
+    // States
+    const [loading, setLoading] = useState/**<Boolean>*/(false);
+    const [emailOrName, setEmailOrName] = useState/**<String> */("");
+    const [users, setUsers] = useState/**<Array<UsersDTO> */([]);
+    
+    
+    // Events
+    function toggleRefDisplay(e){
+        toggleRef.current.classList.toggle("hide");
+    }
+    function updateEmailOrNameAction(e /** EventObject */) /** void */{
+        setEmailOrName(e.target.value);
+    }
 
+    async function searchusersAction(e /** Event */) /** void */{
+        e.preventDefault();
+        // verify emailOrName has characters
+        if(!emailOrName.trim()){
+            alert("Please include characters to search");
+            return;
+        }
+        // fetch result
+        const usersReq /** Response */= await fetch("/withdrawal/searchusers", {
+            method: "POST",
+            headers: {
+                Authorization: token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({emailOrName})
+        });
+        console.log(usersReq)
+        if(usersReq.ok){
+            //set users to result
+            const usersRes /**Array<UserDTO> */ = (await usersReq.json()).users;
+            setUsers(usersRes)
+            console.log({usersRes})
+        }
 
+    }
 
+    // utilities
+    function flattenDictionary(object /** {[key: String]: any} */) /**: Array<any>*/{
+        let res /** Array<any> */ = [];
+        for(let key /**String */ in object){
+            res.push(object[key])
+        }
+        return res;
+    }
+    return (
+        loading ? <Loading /> :
+        <div className="container">
+            <h3 className="containerDesc">
+                Find User, AddBalance
+                <button onClick={toggleRefDisplay}>Display</button>
+            </h3>
+
+            <main className="toggleRef hide" ref={toggleRef}>
+                <form onSubmit={searchusersAction}>
+                    <h4>Find user By Name Or Email</h4>
+                    <label htmlFor="find">
+                        <p>Type username or email</p>
+                        <input 
+                         value={emailOrName}
+                         onChange={updateEmailOrNameAction}
+                        />
+                    </label>
+
+                    <button>Search users</button>
+                </form>
+
+                <div className="usersDiv">
+                    {
+                    users.map(user => (
+                    <main key={user._id} className="userMain">
+                        <section>
+                            <h4>User's full name</h4>
+                            <p>{user.fullName}</p>
+
+                            <h4>User's email</h4>
+                            <p>{user.email}</p>
+                            <br></br>
+                            <div>
+                                <AdminAddTransaction userId={user._id} email={user.email} fullName={user.fullName} token={token} />
+                            </div>
+                            <br></br>
+                            <h4>User Transactions Summary</h4>
+                            <section className="currencySection">
+                                {
+                                    flattenDictionary(user.summary).map((currencyDetails, idx) => (<div className={'currencyDetails'} key={idx}>
+                                        {
+                                            Object.entries(currencyDetails).map(([key, value], idx) => <section key={idx} >
+                                                <h4>{key}</h4>
+                                                <p>{value}</p>
+                                            </section>)
+                                        }
+                                    </div>))
+                                }
+                            </section>
+                        </section>
+                   </main>))
+                    }
+                </div>
+
+                
+            </main>
+        </div>
+    )
+} 
+
+const AdminAddTransaction /** Component */ = ({userId /** ObjectId */, email, fullName, token}) /** JSX.Element */ => {
+    const hideResRef /** Ref */ = useRef(null);
+    const [transaction, setTransaction] = useState/** */({
+        amount: 0,
+        userId,
+        currency: "dollars"
+    })
+
+    function updateTransactionAction(e /**Event */) /**void */{
+        setTransaction(transaction => ({...transaction, [e.target.name]: e.target.value}))
+    }
+
+    async function adminaddtransaction(e){
+        e.preventDefault();
+        if(!transaction.amount || !transaction.currency.trim() || !transaction.userId){
+            alert("Please fill out the form")
+            return
+        }
+
+        const adminAddTransactionReq /** Response  */= await fetch("/transaction/adminaddtransaction", {
+            method: "POST",
+            headers: {
+                authorization: token,
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(transaction)
+        })
+
+        if(adminAddTransactionReq.ok){
+            const response = await adminAddTransactionReq.json();
+            showDisplayHideResRef()
+        }
+    }
+
+    function toggleDisplayHideResRef(){
+        hideResRef.current.classList.toggle("hide")
+    }
+
+    function showDisplayHideResRef(){
+        hideResRef.current.classList.remove("hide")
+    }
+
+    return (
+        <form onSubmit={adminaddtransaction} className="adminaddtransactionForm">
+            <h4>Add money to user with name {fullName} and email {email} </h4>
+            <p className="hide" ref={hideResRef}>Transaction of {transaction.amount}{transaction.currency} successfully added to {fullName}'s account</p>
+            <br />
+            <label htmlFor="amount">
+                Amount
+                <input type={'number'}
+                min={1}
+                required={true}
+                value={transaction.amount}
+                name="amount"
+                onChange={updateTransactionAction}
+                />
+            </label>
+
+            <label htmlFor="currency">
+                Currency e.g dollars
+                <input 
+                minLength={1}
+                required={true}
+                value={transaction.currency}
+                name="currency"
+                onChange={updateTransactionAction}
+                />
+            </label>
+            <button className="adminAddTransaction">Add Transaction for {fullName}</button>
+        </form>
+    )
+}
 /**
  * @route /admin
  * @param {*} props 
@@ -2575,7 +2774,7 @@ const UserAdminComponent /*: ReactComponent */ = (props) => {
         <ViewTransactionHistory user={User}/>
         <UpdatePendingTransactions user={User}/>
         <RetrieveAndUpdateWithdrawals user={User}/>
-
+        <FindAndUpdateUser  user={User} />
         {/* Home Page Admin */}
        <HomePageIntro user={User} />
        <HomepageStats user={User} />
