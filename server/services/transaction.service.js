@@ -351,9 +351,13 @@ class TransactionService /*: implements ITransactionService */ {
             let totalEarnings /** number */ = 0;
             let totalDeposits /** number */ = 0;
             let transactionsForCurrencyCount /** number */ = 0;
+            let totalDepositsWithoutDefault /** Number */= 0;
             for(let transaction /** TransactionModel */ of currencyTransactions){
                 
                 totalEarnings += transaction.currentValue;
+                const amountIfNotDefault /** Number */= transaction.investmentId.desc.includes("default_") ? 0 : transaction.amount;
+                // Add only investments that are not default;
+                totalDepositsWithoutDefault += amountIfNotDefault;
                 totalDeposits += transaction.amount;
                 transactionsForCurrencyCount += 1;
             }
@@ -362,7 +366,7 @@ class TransactionService /*: implements ITransactionService */ {
             const totalProfitFromInvestments /** number */ = totalEarnings - totalDeposits;
             const avgROI /** number */ = (totalProfitFromInvestments / totalDeposits) * PERCENT;
             let currencySummary /**{[Key: String]: number| string } */ = {
-                totalDeposits, 
+                totalDeposits: totalDepositsWithoutDefault, 
                 totalEarnings, 
                 totalProfitFromInvestments,
                 transactionCurrency, 

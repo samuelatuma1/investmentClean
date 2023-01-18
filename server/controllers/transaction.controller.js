@@ -151,10 +151,13 @@ class TransactionController{
             
             const userId /*: ObjectId */= req.userId
             const userAcct /*: AccountModel */ = await this.accountService.retrieveAccount(userId);
-            
+            const defaultTransactionSignature = "default_"
             if(userAcct !== null){
                 const acctId /*:ObjectId */ = userAcct._id;
-                const acctTransactions /*: List<Transaction> */ = await this.transactionService.getUserTransactions(acctId);
+                let acctTransactions /*: List<Transaction> */ = await this.transactionService.getUserTransactions(acctId);
+
+                // remove default transactions
+                acctTransactions = acctTransactions.filter(transaction => !transaction.investmentId.desc.includes(defaultTransactionSignature));
                 return res.status(200).json({acctTransactions});
             }
         } catch(err){
