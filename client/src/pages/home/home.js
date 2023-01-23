@@ -15,9 +15,13 @@ import {HiCurrencyDollar} from "react-icons/hi";
 // Icons
 import {FaArrowUp} from "react-icons/fa";
 import { GrLineChart} from "react-icons/gr"
-import {BiDotsHorizontalRounded} from "react-icons/bi";
-import {BsFillCalendar2CheckFill} from "react-icons/bs";
+import {BiDotsHorizontalRounded, BiLineChart} from "react-icons/bi";
+import {BsFillCalendar2CheckFill, BsShield, BsBrightnessHigh, BsBoxArrowDown, BsBriefcase} from "react-icons/bs";
+import {RiFocus2Fill} from "react-icons/ri"
 import {AiFillStar, AiOutlineArrowRight} from "react-icons/ai";
+
+// Icon Generator
+import { GetIcon } from "../../components/GetIcon";
 // Navigation
 import {Link} from "react-router-dom";
 
@@ -261,7 +265,16 @@ const HowToEarn /** Component */ = (props /** {[key: String]: any} */) => {
                 <header>
                     <h2 style={{textAlign: "center"}}>
                         {howToEarn?.howToEarn?.desc}
+                        
                     </h2>
+                    <p
+                    style={{
+                        width: "70px",
+                        height: "1px",
+                        margin: "20px auto",
+                        borderBottom: "2px solid #f5a623"
+                    }}
+                    ></p>
                 </header>
 
                 <section className="howToEarnSection">
@@ -275,9 +288,14 @@ const HowToEarn /** Component */ = (props /** {[key: String]: any} */) => {
                     <main className="howToEarnMain">
                         
                         {howToEarn?.howToEarn?.steps.map(({title, details}, id) => (
-                            <div key={id}>
-                                <h4><FaChevronCircleRight />{title}</h4>
-                                <p>{details}</p>
+                            <div key={id} className="howToEarnAndIcon">
+                                <section>
+                                    {GetIcon(id)}
+                                </section>
+                                <section>
+                                    <h4>{title}</h4>
+                                    <p>{details}</p>
+                                </section>
                             </div>
                         ))}
                     </main>

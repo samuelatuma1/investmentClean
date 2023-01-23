@@ -46,7 +46,6 @@ class CoinRatesService {
                 ratesResponse.isValid = true;      
             }
         }
-        console.log({ratesResponse})
        
         return ratesResponse;
     }

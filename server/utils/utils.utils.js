@@ -79,7 +79,7 @@ class Utils {
             const req /**Request */= await fetch(url, options)
             if(req.ok){
                 const res /**Response*/ = await req.json();
-                console.log({res});
+                // console.log({res});
                 return res;
             }
             return null;

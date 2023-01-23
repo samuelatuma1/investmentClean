@@ -218,6 +218,9 @@ body{
 }
 
 /* How to Earn */
+.howToEarnMain{
+    margin-top: 25px;
+}
 .howToEarnDiv{
     background-color: var(--intro-bg);
     
@@ -248,13 +251,18 @@ body{
     padding: 10px;
 }
 .howToEarnMain p{
-    padding: 15px;
+    padding: 10px 0px;
     
 }
-.howToEarnMain h2{
+.howToEarnMain h4{
     display: flex;
+    font-weight: bolder;
     align-items: center;
     flex-wrap: wrap;
+}
+.howToEarnAndIcon{
+    display: grid;
+    grid-template-columns: 40px calc(100% - 40px);
 }
 /* Hack for .investmentCardDiv  */
 @media screen and (min-width: 410px){

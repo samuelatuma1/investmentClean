@@ -21,6 +21,9 @@ import {AiFillMinusSquare, AiOutlineTransaction, AiOutlineUser} from "react-icon
 
 // Utilities
 import { Utilities } from "../../general/utilities";
+
+// Icons
+import {GetIcon} from "../../components/GetIcon.js";
 //Styling
 import "../css/admin.css";
 
@@ -1739,12 +1742,15 @@ const HomePageHowToEarn /** Component */ = (props /**{user: User} */) /**JSX */ 
                             {
                                 howToEarn.steps.map((step, idx) => (
                                     <div key={idx}>
+                                        
                                         <h4>Step{idx + 1}</h4>
                                         <h4>
                                             Update Step{idx + 1} Title (Optional)
                                         </h4>
                                         
                                         <label>
+                                        <p>Icon users would see for this step</p>
+                                        {GetIcon(idx)}
                                             <input 
                                             value={step.title}
                                             name={idx}
