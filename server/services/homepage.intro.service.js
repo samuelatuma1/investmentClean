@@ -86,7 +86,6 @@ class IntroService {
         
     }
     /**
-     * 
      * @param {Request} req 
      * @param {FileDTO} img 
      * @returns {String} URL to image Path

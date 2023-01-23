@@ -68,7 +68,7 @@ class Utils {
             // ADD Params from options.params to url
             const params /**{[key: String]: String} */ = options.params;
             let url /**String*/ = params !== null ? options.url + "?": options.url 
-
+            
             if(params !== null){
                 for(let key /**String */ in params){
                     const val /**string */ = params[key];
@@ -76,11 +76,10 @@ class Utils {
                 }
                 url = url.slice(0, url.length - 1);
             }
-            
             const req /**Request */= await fetch(url, options)
             if(req.ok){
                 const res /**Response*/ = await req.json();
-                console.log(res);
+                console.log({res});
                 return res;
             }
             return null;
@@ -103,6 +102,8 @@ class Utils {
             let timeDelta /**number */ = timeInMs / secondsPassed;
 
             switch (unit){
+                case "s":
+                    timeDelta = timeDelta
                 case "m":
                     timeDelta = timeDelta / (60);
                     break;

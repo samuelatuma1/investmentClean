@@ -37,15 +37,16 @@ class CoinRatesService {
         if(currentRates !== null){
             // check last time coinsRate was updateDecorator
             const currentRatesLastDate /*Date */ = currentRates.updatedAt;
-            const noOfLastHrsBeforeLastUpdate = Utils.timeDif(currentRatesLastDate, new Date(), "m");
 
-            const everyXMins /**number */= 5;
+            const noOfLastHrsBeforeLastUpdate = Utils.timeDif(currentRatesLastDate, new Date(), "s");
+            const everyXMins /**number */= 1;
             ratesResponse.id = currentRates._id;
+            console.log({everyXMins, noOfLastHrsBeforeLastUpdate})
             if(everyXMins >= noOfLastHrsBeforeLastUpdate){
                 ratesResponse.isValid = true;      
             }
         }
-
+        console.log({ratesResponse})
        
         return ratesResponse;
     }
@@ -58,7 +59,7 @@ class CoinRatesService {
         const page /** String */ = "1";
         const per_page /** String */ = "5"
  
-        const url/** String */ = 'https://coingecko.p.rapidapi.com/coins/markets';
+        const url /** String */ = "https://api.coingecko.com/api/v3/coins/markets";
         const method /**String */ = "GET"
  
         const options = {
@@ -69,7 +70,7 @@ class CoinRatesService {
              }
         }
         
-        const response /**Array<CoinsDTO> */ = await Utils.fetchData(options);
+        const response /**Array<CoinsDTO> */ = await Utils.fetchData(options); 
         return response;
     }
 
@@ -81,11 +82,10 @@ class CoinRatesService {
         
         // check if CoinRates is valid
         let {isValid /**Boolean */, id /**ObjectId */ } = await this.coinsIsValid();
-        
-        
         if(!isValid){
             // fetch new 
             const coins /**Array<Coin>? */ = await this.#fetchCoinsWithCoinGecko();
+            console.log({coins})
             if(coins !== null){
                 if(id !== ""){
                     await CoinRates.findByIdAndUpdate(id, {coins: coins});

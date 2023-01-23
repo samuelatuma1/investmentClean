@@ -50,7 +50,6 @@ class IWithdrawalService {
      getAllWithdrawals = async () => {}
 
      /**
-     * 
      * @param {ObjectId} withdrawalId 
      * @param {{[Key: String]: String}} updatedDTO 
      * @returns {Promise} 
