@@ -210,8 +210,11 @@ class Mail{
         try{
             const transporter = this.createTransport()
             const mailBody = craftMailTemplate(html)
-
-            const mailRequest = await transporter.sendMail({from: this.email_username, to, subject, html: mailBody})
+            const from =  {
+                name: 'Annika from Bit Solution',
+                address: this.email_username
+            }
+            const mailRequest = await transporter.sendMail({from: from, to, subject, html: mailBody})
             // console.log(mailRequest)
             console.log(mailBody)
             return mailRequest

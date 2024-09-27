@@ -7,7 +7,8 @@
     "test": "mocha server/test --timeout 10000",
     "start": "node ./server/server.js",
     "dev": "nodemon ./server/server.js",
-    "tries": "nodemon tries2.js"
+    "tries": "nodemon tries2.js",
+    "debug": "node ./server/server.js"
   },
   "keywords": [],
   "author": "",

@@ -142,14 +142,14 @@ class AuthService{
      * @param {String} data 
      * @returns {String}
      */
-    #hashData = (data /** String */) /** String */ => {
+    hashData = (data /** String */) /** String */ => {
         return crypto.createHmac("sha256", this.env.HashKey)
                 .update(data).digest("hex");
     }
     authenticate = async (email, password) => {
         
         // Hash password
-        const hashedPassword = this.#hashData(password);
+        const hashedPassword = this.hashData(password);
         const user = await User.findOne({email, password: hashedPassword})
         // if user is add token to data
         if(user){
@@ -300,7 +300,7 @@ class AuthService{
         }
         const user /** User */ = await User.findById(_id);
         if(user){
-            const hashPassword /** String */= this.#hashData(newPassword);
+            const hashPassword /** String */= this.hashData(newPassword);
 
             const updatedPassword = await User.findByIdAndUpdate(_id, {password: hashPassword});
             return {email: user.email};
@@ -322,10 +322,10 @@ class AuthService{
         const user /** User */ = await User.findById(_id);
         if(user !== null){
             // hash oldPassword
-            const oldPasswordHash /** String */= this.#hashData(oldPassword);
+            const oldPasswordHash /** String */= this.hashData(oldPassword);
             const passwordMatches /** boolean */ = user.password === oldPasswordHash;
             if(passwordMatches){
-                const hashPassword /** String */= this.#hashData(newPassword);
+                const hashPassword /** String */= this.hashData(newPassword);
                 const updatedPassword = await User.findByIdAndUpdate(_id, {password: hashPassword});
                 passwordChanged = true;
             }
