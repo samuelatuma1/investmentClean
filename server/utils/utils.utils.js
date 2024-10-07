@@ -38,7 +38,8 @@ class Utils {
      * @returns path to image url
      */
     static getImageUrl = (req /**Request */, img /** img */) /**String */=> {
-        const basePath /**URL */ = req.protocol + "://" + req.get("host") + '/'
+        // const basePath /**URL */ = req.protocol + "://" + req.get("host") + '/'
+        const basePath = ''
         const imgPath /**String */ = basePath + img.path
         return imgPath;
     }

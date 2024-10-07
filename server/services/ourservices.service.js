@@ -153,6 +153,7 @@ class OurServicesService extends IOurServicesService{
                 
                 ourServicesImage  = Utils.convertModelToObject(ourServicesImage);
                 const imgUrl /**String */ = Utils.getImageUrl(req, ourServicesImage);
+                console.log({imgUrl})
                 ourServicesImage.imgUrl = imgUrl;
             }
             return ourServicesImage;
@@ -171,7 +172,7 @@ class OurServicesService extends IOurServicesService{
         for(let image of possibleImagesToDelete){
             const serviceExists = await OurServices.findOne({_id: image.ourServicesId});
             if(!serviceExists){
-                await Utils.deleteFile(image.path);
+                // await Utils.deleteFile(image.path);
             }
         }
     }
@@ -184,7 +185,7 @@ class OurServicesService extends IOurServicesService{
         const possibleImagesToDelete /**AboutUsImage[] */= await OurServicesImage.find({ourServicesId: serviceId});
         for(let image of possibleImagesToDelete){
                 await OurServicesImage.findByIdAndDelete(image._id);
-                await Utils.deleteFile(image.path);
+                // await Utils.deleteFile(image.path);
             
         }
     }
@@ -213,14 +214,14 @@ class OurServicesService extends IOurServicesService{
                 // if no about us
                 // delete the newly saved image
                 console.log("AbOUT TO DELETE")
-                await Utils.deleteFile(ourServicesImageDTO.path);
+                // await Utils.deleteFile(ourServicesImageDTO.path);
             }
             return null
         }
         catch(ex /**Exception */){
             console.log(ex.Message);
             // delete file that may have been created
-            await Utils.deleteFile(ourServicesImageDTO?.path || "");
+            // await Utils.deleteFile(ourServicesImageDTO?.path || "");
             return null;
         }
     }

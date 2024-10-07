@@ -16,13 +16,14 @@ const {HowToEarnService} = require("../services/homepage.howToEarn.service.js");
 const {ReviewService} = require("../services/home.review.service.js");
 const {FooterService} = require("../services/footer.service.js");
 const {AboutUsService} = require("../services/aboutus.service.js");
-const {OurServicesService} = require("../services/ourservices.service.js")
+const {OurServicesService} = require("../services/ourservices.service.js");
+const { FileService } = require("../services/file.service.js");
 
 const uploadImageHandler = new UploadImage();
 const home /**HomeController */ = new HomeController(new IntroService(), new AuthService(), 
 new StatsService(), new CoinRatesService(), new InvestmentService(), 
 new HowToEarnService(), new ReviewService(), new FooterService(), new AboutUsService(),
-new OurServicesService()
+new OurServicesService(), new FileService()
 );
 
 // @Path /home

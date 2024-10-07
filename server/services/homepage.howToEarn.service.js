@@ -58,7 +58,7 @@ class HowToEarnService{
         // Store only one Image on HowToEarnImage
         if(howToEarnImage !== null){
             const filePath = howToEarnImage.path;
-            await Utils.deleteFile(filePath);
+            // await Utils.deleteFile(filePath);
             await howToEarnImage.deleteOne();
         }
 

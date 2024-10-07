@@ -101,7 +101,7 @@ class AboutUsService extends IAboutUsService{
     #deleteAllAboutUsImages = async () /** void */=> {
         const imagesToDelete /**AboutUsImage[] */= await AboutUsImage.find();
         for(let image of imagesToDelete){
-            await Utils.deleteFile(image.path);
+            // await Utils.deleteFile(image.path);
         }
         await AboutUsImage.deleteMany();
     }
@@ -119,6 +119,7 @@ class AboutUsService extends IAboutUsService{
             if(aboutUs !== null){
                 await this.#deleteAllAboutUsImages();
                 let aboutUsImage = await new AboutUsImage(aboutUsImageDTO).save()
+                console.log({aboutUsImage})
                 aboutUsImage  = Utils.convertModelToObject(aboutUsImage);
                 const imgUrl /**String */ = Utils.getImageUrl(req, aboutUsImage);
                 aboutUsImage.imgUrl = imgUrl
@@ -128,14 +129,14 @@ class AboutUsService extends IAboutUsService{
                 // if no about us
                 // delete the newly saved image
                 console.log("AbOUT TO DELETE")
-                await Utils.deleteFile(aboutUsImageDTO.path);
+                // await Utils.deleteFile(aboutUsImageDTO.path);
             }
             return null
         }
         catch(ex /**Exception */){
-            console.log(ex.Message);
+            console.log({ex});
             // delete file that may have been created
-            await Utils.deleteFile(aboutUsImageDTO?.path || "");
+            // await Utils.deleteFile(aboutUsImageDTO?.path || "");
             return null;
         }
     }

@@ -8,6 +8,7 @@ const {IReviewService} = require("../services/home.review.service.js");
 const {IFooterService, FooterDTO} = require("../services/footer.service.js");
 const { IAboutUsService, AboutUsDTO } = require("../services/aboutus.service.js");
 const {IOurServicesService, OurServicesDTO, OurServicesImageDTO} = require("../services/aboutus.service.js");
+const {IFileService, FileService} = require("../services/file.service.js")
 // DTOS
 const AboutUsImageDTO = {
     fieldname : String,
@@ -83,6 +84,7 @@ class HomeController {
      * @param {IFooterService} footerService
      * @param {IAboutUsService} aboutUsService 
      * @param {IOurServicesService} ourServices
+     * @param {IFileService} fileService
      */
     constructor( 
         introService /**IIntroService */, 
@@ -94,7 +96,8 @@ class HomeController {
         reviewService /**IReviewService */,
         footerService /**IFooterService */,
         aboutUsService /** IAboutUsService */,
-        ourServices /** IOurServicesService */
+        ourServices /** IOurServicesService */,
+        fileService /**IFileService */
         ) {
 
         this.introService = introService;
@@ -107,6 +110,7 @@ class HomeController {
         this.footerService = footerService;
         this.aboutUsService = aboutUsService;
         this.ourServices = ourServices;
+        this.fileService = fileService
     }
 
     /** 
@@ -145,15 +149,17 @@ class HomeController {
             if(!heading || !body || !adminWhatsappNum){
                 return res.status(403).json({error: "Please, include a valid heading, body and whatsapp number"});
             }
-            const fileData /**FileSchema  */ = req.file;
+            let fileData /**FileSchema  */ = req.file;
             if(!fileData){
                 return res.status(403).json({error: "Please, include a valid image"});
             }
+            fileData = await this.fileService.saveFile(fileData)
+
             const intro /**Intro */ = await this.introService.createIntro( {heading, body, adminWhatsappNum}, fileData, req);
             // console.log("This is the intro", intro);
             return res.status(201).json({intro});
         } catch(ex /**Message */){
-            // console.log(ex);
+            console.log({ex});
             return res.status(400).json({error: ex.message});
         }
     }
@@ -277,7 +283,11 @@ class HomeController {
             if(!isAdmin)
                 return res.status(403).json({message: "You are not permitted to upload image"});
             
-            const fileData /**FileSchema  */ = req.file;
+            let fileData /**FileSchema  */ = req.file;
+            if(!fileData){
+                return res.status(403).json({error: "Please, include a valid image"});
+            }
+            fileData = await this.fileService.saveFile(fileData)
             if(!fileData){
                 return res.status(403).json({error: "Please, include a valid image"});
             }
@@ -558,20 +568,25 @@ class HomeController {
                return res.status(403).json({message: "You are not permitted to upload image"});
 
            // arrange
-           const file /** AboutUsImageDTO */ = req.file;
+           let fileData /** AboutUsImageDTO */ = req.file;
+        //    let fileData /**FileSchema  */ = req.file;
+           if(!fileData){
+               return res.status(403).json({error: "Please, include a valid image"});
+           }
+           fileData = await this.fileService.saveFile(fileData)
            const { aboutUsId /** ObjectId */} = req.body;
            if(aboutUsId === null){
                return res.status(403).json({message: "Please, include an about us id"});
            }
-           console.log({file, body: req.body})
-           file.aboutUsId = aboutUsId;
-
+           fileData.aboutUsId = aboutUsId;
+           console.log({file: fileData, body: req.body})
            // act
-           const savedImage /** AboutUsImage */=  await this.aboutUsService.addAboutUsImage(file, req);
+           const savedImage /** AboutUsImage */=  await this.aboutUsService.addAboutUsImage(fileData, req);
 
            return res.status(201).json({aboutUsImage: savedImage });
        }
        catch(ex /** Message */){
+            console.log({ex})
            return res.status(400).json({error: ex.message});
        }
     }
@@ -743,16 +758,20 @@ class HomeController {
                return res.status(403).json({message: "You are not permitted to upload image"});
 
            // arrange
-           const file /** OurServicesImageDTO */ = req.file;
+           let fileData /** OurServicesImageDTO */ = req.file;
+           if(!fileData){
+                return res.status(403).json({error: "Please, include a valid image"});
+            }
+            fileData = await this.fileService.saveFile(fileData)
            const { ourServicesId /** ObjectId */} = req.body;
            if(ourServicesId === null){
                return res.status(403).json({message: "Please, include an ourServices id"});
            }
-           console.log({file, body: req.body})
-           file.ourServicesId = ourServicesId;
+           console.log({file: fileData, body: req.body})
+           fileData.ourServicesId = ourServicesId;
 
            // act
-           const savedImage /** OurServicesImage */=  await this.ourServices.addOurServicesImage(file, req);
+           const savedImage /** OurServicesImage */=  await this.ourServices.addOurServicesImage(fileData, req);
            console.log({savedImage});
            return res.status(201).json({ourServicesImage: savedImage });
        }

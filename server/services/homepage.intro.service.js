@@ -44,7 +44,7 @@ class IntroService {
      */
     #deleteFile = async (filePath /**String */)/**void */ => {
         try{
-            await fs.unlink(filePath);
+            // await fs.unlink(filePath);
             return ;
         } catch(ex /**Exception */){
             return ;
@@ -91,7 +91,8 @@ class IntroService {
      * @returns {String} URL to image Path
      */
     #getImageUrl = (req /**Request */, img /** img */) /**String */=> {
-            const basePath /**URL */ = req.protocol + "://" + req.get("host") + '/'
+            // const basePath /**URL */ = req.protocol + "://" + req.get("host") + '/'
+            const basePath /**URL */ = '';
             const imgPath /**String */ = basePath + img.path
             return imgPath;
     }
